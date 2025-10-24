@@ -1,0 +1,134 @@
+﻿@model ProductDetailsModel.AddToCartModel
+@using Nop.Core.Domain.Orders
+@if (Model.UpdatedShoppingCartItemId > 0)
+{
+    <input asp-for="UpdatedShoppingCartItemId" type="hidden" />
+}
+@if (!Model.DisableBuyButton || Model.CustomerEntersPrice)
+{
+    <div class="add-to-cart">
+        @if (Model.CustomerEntersPrice)
+        {
+            <div class="customer-entered-price">
+                <div class="price-input">
+                    <label asp-for="CustomerEnteredPrice" asp-postfix=":" class="enter-price-label"></label>
+                    @*round price*@
+                    <input asp-for="CustomerEnteredPrice" value="@Convert.ToInt32(Math.Ceiling(Model.CustomerEnteredPrice))" class="enter-price-input" />
+                </div>
+                <div class="price-range">
+                    @Model.CustomerEnteredPriceRange
+                </div>
+            </div>
+        }
+        @if (!string.IsNullOrEmpty(Model.MinimumQuantityNotification))
+        {
+            <div class="min-qty-notification">@Model.MinimumQuantityNotification</div>
+        }
+        @if (!Model.DisableBuyButton)
+        {
+            <div class="add-to-cart-panel">
+                @* Label hidden but kept for accessibility *@
+                <label asp-for="EnteredQuantity" asp-postfix=":" class="qty-label sr-only"></label>
+
+                @* Quantity Control with Minus/Plus Buttons *@
+                <div class="qty-control-wrapper">
+                    @if (Model.AllowedQuantities.Count > 0)
+                    {
+                        <select asp-for="EnteredQuantity" asp-items="Model.AllowedQuantities" id="product_enteredQuantity_@Model.ProductId" class="qty-dropdown" aria-label=@T("Products.Qty.AriaLabel")></select>
+                        <script asp-location="Footer">
+                            $(function() {
+                                $("#product_enteredQuantity_@Model.ProductId").on("change", function () {
+                                    var data = {
+                                        productId: @Model.ProductId,
+                                        quantity: $('#product_enteredQuantity_@Model.ProductId').find(":selected").text()
+                                    };
+                                    $(document).trigger({ type: "product_quantity_changed", changedData: data });
+                                });
+                            });
+                        </script>
+                    }
+                    else
+                    {
+                        <button type="button" class="qty-button qty-minus" data-target="product_enteredQuantity_@Model.ProductId" aria-label="Menge verringern">−</button>
+                        <input asp-for="EnteredQuantity" id="product_enteredQuantity_@Model.ProductId" class="qty-input" type="number" min="@Model.AllowedQuantities.FirstOrDefault()?.Value ?? 1" aria-label=@T("Products.Qty.AriaLabel")/>
+                        <button type="button" class="qty-button qty-plus" data-target="product_enteredQuantity_@Model.ProductId" aria-label="Menge erhöhen">+</button>
+                        <script asp-location="Footer">
+                            $(function() {
+                                // Enter key submits add to cart
+                                $("#@Html.IdFor(model => model.EnteredQuantity)").on("keydown", function(event) {
+                                    if (event.keyCode == 13) {
+                                        $("#add-to-cart-button-@Model.ProductId").trigger("click");
+                                        return false;
+                                    }
+                                });
+
+                                // Trigger quantity changed event
+                                $("#product_enteredQuantity_@Model.ProductId").on("input propertychange paste", function () {
+                                    var data = {
+                                        productId: @Model.ProductId,
+                                        quantity: $('#product_enteredQuantity_@Model.ProductId').val()
+                                    };
+                                    $(document).trigger({ type: "product_quantity_changed", changedData: data });
+                                });
+
+                                // Plus/Minus button handlers
+                                var inputId = "product_enteredQuantity_@Model.ProductId";
+                                var $input = $("#" + inputId);
+                                var minQty = parseInt($input.attr("min")) || 1;
+
+                                $(".qty-minus[data-target='" + inputId + "']").on("click", function() {
+                                    var currentVal = parseInt($input.val()) || minQty;
+                                    if (currentVal > minQty) {
+                                        $input.val(currentVal - 1).trigger("input");
+                                    }
+                                });
+
+                                $(".qty-plus[data-target='" + inputId + "']").on("click", function() {
+                                    var currentVal = parseInt($input.val()) || minQty;
+                                    $input.val(currentVal + 1).trigger("input");
+                                });
+                            });
+                        </script>
+                    }
+                </div>
+
+                @* Add to Cart Button *@
+                @{
+                    var addToCartText = "";
+                    if (Model.UpdatedShoppingCartItemId > 0 && Model.UpdateShoppingCartItemType.HasValue && Model.UpdateShoppingCartItemType.Value == ShoppingCartType.ShoppingCart)
+                    {
+                        addToCartText = T("ShoppingCart.AddToCart.Update").Text;
+                    }
+                    else
+                    {
+                        addToCartText = T("ShoppingCart.AddToCart").Text;
+                        if (Model.IsRental)
+                        {
+                            addToCartText = T("ShoppingCart.Rent").Text;
+                        }
+                        if (Model.AvailableForPreOrder)
+                        {
+                            addToCartText = T("ShoppingCart.PreOrder").Text;
+                        }
+                    }
+                    <button type="button" id="add-to-cart-button-@Model.ProductId" class="button-1 add-to-cart-button" data-productid="@Model.ProductId" onclick="AjaxCart.addproducttocart_details('@Url.RouteUrl(NopRouteNames.Ajax.ADD_PRODUCT_TO_CART_DETAILS, new { productId = Model.ProductId, shoppingCartTypeId = (int)ShoppingCartType.ShoppingCart })', '#product-details-form');return false;">
+                        <span class="cart-icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img">
+                                <path fill-rule="evenodd" clip-rule="evenodd" d="M1 2.75C1 2.33579 1.33579 2 1.75 2H2.27029C3.34283 2 4.26626 2.75703 4.4766 3.80874L4.71485 5H20.2676C21.3791 5 22.209 6.02281 21.98 7.11052L20.5682 13.8165C20.3003 15.0891 19.1777 16 17.8772 16H7.63961C6.32874 16 5.20009 15.0747 4.94301 13.7893L3.00573 4.10291C2.93562 3.75234 2.6278 3.5 2.27029 3.5H1.75C1.33579 3.5 1 3.16421 1 2.75ZM6 19C6 17.8954 6.89543 17 8 17C9.10457 17 10 17.8954 10 19C10 20.1046 9.10457 21 8 21C6.89543 21 6 20.1046 6 19ZM15 19C15 17.8954 15.8954 17 17 17C18.1046 17 19 17.8954 19 19C19 20.1046 18.1046 21 17 21C15.8954 21 15 20.1046 15 19Z"></path>
+                            </svg>
+                        </span>
+                        <span class="cart-text">@addToCartText</span>
+                    </button>
+                }
+            </div>
+            if (!string.IsNullOrEmpty(Model.PreOrderAvailabilityStartDateTimeUserTime))
+            {
+                <div class="pre-order-availability-date">
+                    <label>@T("ShoppingCart.PreOrderAvailability"):</label>
+                    @Html.Raw(Model.PreOrderAvailabilityStartDateTimeUserTime)
+                </div>
+            }
+        }
+        @await Component.InvokeAsync(typeof(WidgetViewComponent), new { widgetZone = PublicWidgetZones.ProductDetailsAddInfo, additionalData = Model })
+    </div>
+}
