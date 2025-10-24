@@ -1,0 +1,322 @@
+// ===================================================================
+// Mobile Header (Adidas-style)
+// Clean, icon-based navigation with hamburger menu
+// ===================================================================
+
+// Hide mobile elements on desktop
+@media (min-width: 1001px) {
+    .mobile-menu-toggle,
+    .mobile-header-icons,
+    .mobile-nav-drawer,
+    .mobile-nav-overlay,
+    .mobile-search-overlay {
+        display: none !important;
+    }
+}
+
+@media (max-width: 1000px) {
+    // Mobile header layout
+    .header {
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        background: $color-white;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+        // Hide desktop header-upper on mobile
+        .header-upper {
+            display: none;
+        }
+
+        // Mobile header bar
+        .header-lower {
+            display: flex !important;
+            align-items: center !important;
+            justify-content: space-between !important;
+            padding: 8px 16px !important; // Override Desktop-Padding
+            gap: 12px !important;
+
+            // Logo centered
+            .header-logo {
+                flex: 1;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                order: 2; // Middle position
+                margin: 0 !important; // Remove bottom margin from desktop CSS
+
+                a {
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                }
+
+                img {
+                    max-height: 32px !important; // Kleiner (war 40px)
+                    max-width: 140px !important; // Auch Breite begrenzen
+                    width: auto;
+                    height: auto;
+                    object-fit: contain;
+                }
+            }
+
+            // Search box - hide, replace with icon
+            .search-box {
+                display: none; // Will be replaced by search icon
+            }
+        }
+
+        // Mobile icons container (left side)
+        .mobile-menu-toggle {
+            order: 1;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            padding: 8px;
+            color: $color-text;
+            font-size: 24px;
+
+            &:hover {
+                color: $color-success;
+            }
+        }
+
+        // Mobile icons container (right side)
+        .mobile-header-icons {
+            order: 3;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+
+            .search-icon,
+            .wishlist-icon,
+            .cart-icon {
+                position: relative;
+                padding: 8px;
+                color: $color-text;
+                font-size: 20px;
+                cursor: pointer;
+
+                &:hover {
+                    color: $color-success;
+                }
+
+                // Badge for quantities
+                .badge {
+                    position: absolute;
+                    top: 2px;
+                    right: 2px;
+                    background: $color-secondary;
+                    color: $color-white;
+                    border-radius: 50%;
+                    width: 18px;
+                    height: 18px;
+                    font-size: 11px;
+                    font-weight: 600;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                }
+            }
+        }
+    }
+
+    // Hide desktop menu on mobile
+    .header-menu {
+        display: none;
+    }
+
+    // Mobile navigation drawer (slides from left like Adidas)
+    .mobile-nav-drawer {
+        position: fixed;
+        top: 0;
+        left: -100%;
+        width: 85%;
+        max-width: 400px;
+        height: 100vh;
+        background: $color-white;
+        z-index: 9999;
+        overflow-y: auto;
+        transition: left 0.3s ease;
+        box-shadow: 2px 0 8px rgba(0, 0, 0, 0.2);
+
+        // Open state
+        &.open {
+            left: 0;
+        }
+
+        // Drawer header
+        .drawer-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px;
+            border-bottom: 1px solid $color-border;
+
+            .close-drawer {
+                font-size: 24px;
+                cursor: pointer;
+                padding: 8px;
+                color: $color-text;
+
+                &:hover {
+                    color: $color-secondary;
+                }
+            }
+        }
+
+        // Navigation items
+        .drawer-menu {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+
+            .menu-item {
+                border-bottom: 1px solid $color-border;
+
+                a, button {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    width: 100%;
+                    padding: 16px;
+                    background: none;
+                    border: none;
+                    text-align: left;
+                    font-size: 16px;
+                    font-weight: 600;
+                    color: $color-text;
+                    text-decoration: none;
+                    cursor: pointer;
+                    transition: background 0.2s;
+
+                    &:hover {
+                        background: lighten($color-success, 50%);
+                    }
+
+                    .arrow {
+                        font-size: 20px;
+                    }
+                }
+
+                // Submenu
+                .submenu {
+                    list-style: none;
+                    padding: 0;
+                    margin: 0;
+                    background: #f8f8f8;
+                    overflow: hidden;
+                    max-height: 0; // Collapsed by default
+                    opacity: 0;
+                    transition: max-height 0.3s ease, opacity 0.3s ease;
+
+                    &.open {
+                        max-height: 1000px; // Large enough for content
+                        opacity: 1;
+                    }
+
+                    li a {
+                        padding: 12px 16px 12px 32px;
+                        font-weight: 400;
+                        font-size: 15px;
+                        display: block;
+                    }
+                }
+            }
+        }
+
+        // Account links at bottom
+        .drawer-footer {
+            padding: 16px;
+            border-top: 1px solid $color-border;
+            margin-top: 16px;
+
+            a {
+                display: block;
+                padding: 12px 0;
+                color: $color-text;
+                text-decoration: none;
+                font-size: 15px;
+
+                &:hover {
+                    color: $color-success;
+                }
+            }
+        }
+    }
+
+    // Overlay backdrop
+    .mobile-nav-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100vh;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 9998;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.3s, visibility 0.3s;
+
+        &.open {
+            opacity: 1;
+            visibility: visible;
+        }
+    }
+
+    // Mobile search overlay (full screen like Adidas)
+    .mobile-search-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100vh;
+        background: $color-white;
+        z-index: 9999;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.3s, visibility 0.3s;
+
+        &.open {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .search-header {
+            display: flex;
+            align-items: center;
+            padding: 12px 16px;
+            gap: 12px;
+            border-bottom: 1px solid $color-border;
+
+            .back-button {
+                font-size: 24px;
+                cursor: pointer;
+                padding: 8px;
+                color: $color-text;
+
+                &:hover {
+                    color: $color-success;
+                }
+            }
+
+            .search-input {
+                flex: 1;
+                border: none;
+                font-size: 16px;
+                padding: 8px;
+                outline: none;
+
+                &::placeholder {
+                    color: #999;
+                }
+            }
+        }
+
+        .search-results {
+            padding: 16px;
+            overflow-y: auto;
+            max-height: calc(100vh - 60px);
+        }
+    }
+}

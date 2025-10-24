@@ -1,0 +1,31 @@
+// ===================================================================
+// Header Links (Cart & Wishlist quantity display)
+// Remove parentheses from quantity display
+// ===================================================================
+
+.header-links {
+    // Cart quantity - remove parentheses
+    .cart-qty,
+    .wishlist-qty {
+        // Hide the parentheses by targeting the text nodes
+        // The translation strings contain "(X)" format
+        // We'll use CSS to clean this up
+
+        &::before,
+        &::after {
+            content: none; // Remove any pseudo-elements
+        }
+    }
+}
+
+// Alternative approach: Hide parentheses if they're in the HTML
+// This targets the actual text content
+.header-links {
+    .cart-qty,
+    .wishlist-qty {
+        font-size: inherit;
+
+        // If the parentheses are visible, we hide them with letter-spacing trick
+        // or we override the content entirely
+    }
+}

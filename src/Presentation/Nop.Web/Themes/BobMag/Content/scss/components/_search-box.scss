@@ -1,0 +1,115 @@
+// ===================================================================
+// Search Box (Header)
+// Seamless connection between input and button
+// ===================================================================
+
+#small-search-box-form {
+    display: flex;
+    align-items: stretch; // Match heights
+    gap: 0; // No gap between elements
+
+    // Input field
+    .search-box-text {
+        flex: 1;
+        border-radius: 25px 0 0 25px !important; // Only left side rounded
+        border-right: none !important; // Remove right border for seamless look
+        padding: 10px 20px;
+        border: 2px solid $color-border;
+        font-size: 16px;
+        outline: none;
+        transition: border-color 0.2s;
+
+        &:focus {
+            border-color: $color-success; // Green border on focus
+            border-right: none !important; // Keep no right border
+        }
+
+        &::placeholder {
+            color: lighten($color-text, 40%);
+        }
+    }
+
+    // Category dropdown (if enabled)
+    .search-box-category {
+        border-radius: 0 !important; // No rounded corners
+        border-left: none !important; // No left border
+        border-right: none !important; // No right border
+        border-top: 2px solid $color-border;
+        border-bottom: 2px solid $color-border;
+        padding: 10px 15px;
+        font-size: 16px;
+        outline: none;
+        background-color: $color-white;
+        cursor: pointer;
+
+        &:focus {
+            border-color: $color-success;
+        }
+    }
+
+    // Search button
+    .search-box-button {
+        border-radius: 0 25px 25px 0 !important; // Only right side rounded
+        border: none;
+        padding: 10px 30px;
+        background-color: $color-primary; // Orange
+        color: $color-white;
+        font-size: 16px;
+        font-weight: 500;
+        text-transform: uppercase;
+        cursor: pointer;
+        transition: background-color 0.2s;
+        white-space: nowrap; // Prevent text wrap
+
+        &:hover {
+            background-color: darken($color-primary, 8%);
+        }
+
+        &:active {
+            transform: scale(0.98);
+        }
+    }
+
+    // If input is focused, highlight the whole group
+    .search-box-text:focus ~ .search-box-button {
+        // Optional: Could add a glow effect to button when input is focused
+    }
+}
+
+// Search box wrapper (parent container)
+.search-box {
+    position: relative;
+
+    // Autocomplete dropdown styling
+    .ui-autocomplete {
+        border-radius: $radius-md;
+        border: 1px solid $color-border;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        background: $color-white;
+        max-height: 400px;
+        overflow-y: auto;
+        z-index: 1000;
+
+        .ui-menu-item {
+            padding: 8px 12px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+
+            &:hover {
+                background-color: lighten($color-success, 45%);
+            }
+
+            a {
+                color: $color-text;
+                text-decoration: none;
+                display: flex;
+                align-items: center;
+                gap: 12px;
+
+                img {
+                    border-radius: $radius-sm;
+                }
+            }
+        }
+    }
+}

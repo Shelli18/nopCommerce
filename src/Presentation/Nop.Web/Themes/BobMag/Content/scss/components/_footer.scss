@@ -1,0 +1,374 @@
+// ===================================================================
+// COMPONENT: FOOTER
+// Improved colors, spacing, typography for better visual hierarchy
+// ===================================================================
+
+.footer {
+  margin: 0; // No gap between membership banner and footer
+
+  // === FOOTER UPPER (Navigation columns) ===
+  .footer-upper {
+    background-color: #f3f3f3; // Hellgrau
+    padding: 3rem 4rem 2rem; // Mehr Padding links/rechts (gelbe Bereiche)
+
+    @media (max-width: 768px) {
+      padding: 2rem 2rem; // Auch auf Mobile mehr Padding
+    }
+
+    // Content Container
+    max-width: 1200px;
+    margin: 0 auto;
+
+    // Wrapper for proper layout
+    .footer-content-wrapper {
+      display: flex !important;
+      flex-wrap: wrap !important;
+      gap: 2.5rem !important;
+      justify-content: space-between !important;
+
+      @media (max-width: 768px) {
+        gap: 2rem !important;
+      }
+
+      // FooterMenuViewComponent renders nav element - in the MIDDLE
+      > nav,
+      > .footer-navigation {
+        flex: 1 1 auto;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 2.5rem;
+        order: 2; // Put in middle
+
+        @media (max-width: 768px) {
+          gap: 2rem;
+          order: 1; // On mobile, show first
+        }
+      }
+
+      // Follow us block - on the RIGHT
+      > .follow-us {
+        order: 3; // Put last (right side)
+        flex: 0 1 auto;
+
+        @media (max-width: 768px) {
+          order: 3; // On mobile, show last
+          width: 100%;
+        }
+      }
+    }
+
+    // Footer Blöcke (Information, Customer service, etc.)
+    .footer-block {
+      .title {
+        font-size: 1.1rem; // Größer als vorher
+        font-weight: 700; // Fetter für bessere Hierarchie
+        color: $color-text;
+        margin-bottom: 1rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+
+        li {
+          margin-bottom: 0.5rem;
+        }
+      }
+
+      a {
+        color: #555; // Etwas grauer als Überschriften
+        font-size: 0.95rem;
+        line-height: 1.6;
+        transition: color 0.2s ease;
+
+        &:hover {
+          color: $color-primary;
+        }
+      }
+    }
+
+    // Newsletter & Social Media Block
+    .follow-us {
+      // Row mit Social Icons links und Trust Headers rechts
+      .social-and-trust-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 1.5rem;
+        gap: 2rem;
+
+        @media (max-width: 768px) {
+          flex-direction: column;
+          gap: 1.5rem;
+        }
+      }
+
+      .social {
+        flex: 0 0 auto;
+
+        h2.title {
+          font-size: 1.1rem;
+          font-weight: 700;
+          color: $color-text;
+          margin-bottom: 1rem;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+        }
+
+        // Text unter Social Icons ausblenden
+        .networks {
+          li {
+            a {
+              font-size: 0 !important; // Text verstecken
+              text-indent: -9999px; // Text aus sichtbarem Bereich
+              overflow: hidden;
+            }
+          }
+        }
+      }
+
+      // Trust Headers rechts neben Social Icons
+      .trust-headers {
+        display: flex;
+        gap: 5rem; // Increased from 3rem to 5rem for better visual separation
+        flex: 1 1 auto;
+        justify-content: flex-end;
+        align-items: flex-start;
+
+        @media (max-width: 768px) {
+          justify-content: flex-start;
+          gap: 2rem;
+        }
+
+        .trust-header-item {
+          flex: 0 0 auto; // Don't grow or shrink
+
+          h2 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: $color-text;
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            text-align: left;
+            white-space: nowrap;
+            padding: 0; // Ensure no extra padding
+          }
+        }
+      }
+    }
+
+    // Trust Methods in Footer (Payment & Shipping logos)
+    .trust-methods-footer {
+      width: 100%;
+
+      .method-logos {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        justify-content: flex-start;
+
+        @media (max-width: 768px) {
+          justify-content: center;
+        }
+
+        .method-logo {
+          width: 50px;
+          height: auto;
+          background-color: $color-white;
+          padding: 5px;
+          border-radius: $radius-sm;
+          border: 1px solid $color-border;
+          transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+          &:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+          }
+
+          @media (max-width: 480px) {
+            width: 45px;
+            padding: 4px;
+          }
+        }
+      }
+    }
+  }
+
+  // === FOOTER LOWER (Copyright, Powered by) ===
+  .footer-lower {
+    background-color: #e8e8e8; // Etwas dunkler als footer-upper für Trennung
+    padding: 1.5rem 1rem;
+    border-top: 1px solid #d0d0d0; // Dezente Trennlinie
+
+    @media (max-width: 768px) {
+      padding: 1.25rem 1rem;
+    }
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    max-width: 1200px;
+    margin: 0 auto;
+    gap: 1rem;
+
+    @media (max-width: 768px) {
+      flex-direction: column;
+      text-align: center;
+    }
+
+    .footer-info {
+      font-size: 0.85rem;
+      color: #666;
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+
+      @media (max-width: 768px) {
+        justify-content: center;
+      }
+
+      .footer-disclaimer,
+      .footer-tax-shipping {
+        color: #666;
+      }
+
+      a {
+        color: $color-primary;
+        text-decoration: underline;
+
+        &:hover {
+          color: darken($color-primary, 10%);
+        }
+      }
+    }
+
+    .footer-powered-by {
+      font-size: 0.85rem;
+      color: #666;
+
+      a {
+        color: $color-primary;
+        font-weight: 600;
+        text-decoration: none;
+
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+    }
+  }
+}
+
+// Newsletter Box Improvements
+.newsletter-box {
+  .newsletter-email {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+
+    input[type="email"] {
+      flex: 1;
+      padding: 0.75rem;
+      border: 1px solid #d0d0d0;
+      border-radius: $radius-sm;
+      font-size: 0.95rem;
+
+      &:focus {
+        outline: none;
+        border-color: $color-primary;
+        box-shadow: 0 0 0 3px rgba($color-primary, 0.1);
+      }
+    }
+
+    button {
+      padding: 0.75rem 1.5rem;
+      background-color: $color-primary;
+      color: $color-white;
+      border: none;
+      border-radius: $radius-sm;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+
+      &:hover {
+        background-color: darken($color-primary, 8%);
+      }
+    }
+  }
+
+  // Newsletter Legal Disclaimer - Compact Style with Expandable Text
+  .newsletter-disclaimer {
+    margin-top: 0.75rem;
+    font-size: 0.75rem;
+    color: #777;
+    line-height: 1.5;
+    max-width: 100%;
+
+    // Compact consent label
+    .newsletter-consent-label {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      font-size: 0.85rem;
+      color: #555;
+
+      input[type="checkbox"] {
+        margin: 0;
+        cursor: pointer;
+      }
+    }
+
+    // "Weitere Infos" link
+    .newsletter-info-link {
+      color: $color-primary;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.8rem;
+      margin-left: 0.25rem;
+      transition: color 0.2s ease;
+
+      &:hover {
+        color: darken($color-primary, 10%);
+        text-decoration: underline;
+      }
+
+      &::before {
+        content: "▸ ";
+        display: inline-block;
+        transition: transform 0.3s ease;
+      }
+
+      // When expanded, rotate arrow
+      &.expanded::before {
+        transform: rotate(90deg);
+      }
+    }
+
+    // Expandable legal text
+    .newsletter-legal-text {
+      margin-top: 0.75rem;
+      padding: 0.75rem;
+      background-color: rgba($color-white, 0.5);
+      border-left: 3px solid $color-primary;
+      border-radius: $radius-sm;
+      font-size: 0.7rem;
+      color: #666;
+      line-height: 1.6;
+
+      a {
+        color: $color-primary;
+        text-decoration: underline;
+
+        &:hover {
+          color: darken($color-primary, 10%);
+        }
+      }
+    }
+  }
+}

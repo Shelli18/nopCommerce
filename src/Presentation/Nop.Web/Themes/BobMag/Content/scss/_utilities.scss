@@ -1,0 +1,12 @@
+// ===== UTILITIES =====
+.u-hide { display: none !important; }
+.u-visually-hidden { @include visually-hidden; }
+
+.u-container { @include container; }
+
+.u-mb-0 { margin-bottom: 0 !important; }
+.u-mb-2 { margin-bottom: $space-2 !important; }
+.u-mb-4 { margin-bottom: $space-4 !important; }
+.u-mb-8 { margin-bottom: $space-8 !important; }
+
+.u-text-muted { color: lighten($color-text, 30%) !important; }

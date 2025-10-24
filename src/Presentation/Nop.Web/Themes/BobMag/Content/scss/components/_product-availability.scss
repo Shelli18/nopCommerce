@@ -1,0 +1,173 @@
+// ===================================================================
+// Product Availability & Delivery Info
+// Colored status indicators (bullets) for stock availability
+// Grouped together with separator lines
+// ===================================================================
+
+// ===================================================================
+// GROUPED AVAILABILITY & DELIVERY SECTION
+// Creates a visually grouped block with top and bottom borders
+// ===================================================================
+.product-essential .overview {
+    // Create a grouped container for availability + delivery
+    .availability {
+        // Top border separator
+        border-top: 1px solid $color-border;
+        padding-top: 16px;
+        margin-top: 20px;
+        margin-bottom: 2px; // Very tight spacing to delivery section (halved from 4px)
+    }
+
+    .delivery {
+        // Bottom border separator
+        border-bottom: 1px solid $color-border;
+        padding-bottom: 16px;
+        margin-bottom: 20px;
+        margin-top: 0; // Very tight spacing from availability section
+    }
+
+    // If delivery comes right after availability, reduce spacing
+    .availability + .sku-man-gtin-ven + .delivery,
+    .availability ~ .delivery {
+        margin-top: 2px; // Very tight spacing (halved from 4px)
+    }
+}
+
+// ===================================================================
+// Stock Availability Section
+// ===================================================================
+.availability {
+    .stock {
+        display: flex;
+        align-items: center;
+        line-height: 1.6;
+        margin-bottom: 2px; // Tighter spacing to delivery (reduced from 8px)
+
+        // Hide the "Verfügbarkeit:" label
+        .label {
+            display: none;
+        }
+
+        .value {
+            display: flex;
+            align-items: center;
+
+            // Add bullet to all stock values - DEFAULT GREEN
+            &::before {
+                content: "●";
+                margin-right: 10px;
+                font-size: 24px; // Larger bullet (increased from 20px)
+                color: $color-success; // Default GREEN for in-stock
+                line-height: 1;
+                flex-shrink: 0; // Prevent bullet from shrinking
+            }
+        }
+    }
+
+    // Red bullet ONLY for out-of-stock items (override default green)
+    &.out-of-stock .stock .value::before,
+    .out-of-stock .value::before,
+    .stock.out-of-stock .value::before {
+        color: $color-secondary; // Red (#d20000)
+    }
+}
+
+// ===================================================================
+// Delivery Info Section
+// ===================================================================
+.delivery {
+    .delivery-date,
+    .free-shipping {
+        display: flex;
+        align-items: center;
+        line-height: 1.6;
+        margin-bottom: 8px;
+
+        &:last-child {
+            margin-bottom: 0;
+        }
+
+        .label {
+            display: flex;
+            align-items: center;
+        }
+
+        .value {
+            display: flex;
+            align-items: center;
+        }
+
+        // Green bullet for delivery info
+        &::before {
+            content: "●";
+            margin-right: 10px;
+            font-size: 24px; // Larger bullet (increased from 20px)
+            color: $color-success; // Green (delivery is available)
+            line-height: 1;
+            flex-shrink: 0; // Prevent bullet from shrinking
+        }
+    }
+}
+
+// ===================================================================
+// Variant-specific availability (used in dropdown/modal)
+// ===================================================================
+.variant-availability {
+    display: flex;
+    align-items: center;
+    line-height: 1.6;
+
+    .in-stock,
+    .out-of-stock {
+        display: flex;
+        align-items: center;
+    }
+
+    // Green bullet for in-stock variants
+    .in-stock::before {
+        content: "●";
+        margin-right: 10px;
+        font-size: 22px; // Larger bullet for variants (increased from 18px)
+        color: $color-success; // Green
+        line-height: 1;
+        flex-shrink: 0;
+    }
+
+    // Red bullet for out-of-stock variants
+    .out-of-stock::before {
+        content: "●";
+        margin-right: 10px;
+        font-size: 22px; // Larger bullet for variants (increased from 18px)
+        color: $color-secondary; // Red (#d20000)
+        line-height: 1;
+        flex-shrink: 0;
+    }
+}
+
+// ===================================================================
+// Stock availability in product cards (overview pages)
+// ===================================================================
+.product-item {
+    .stock {
+        display: flex;
+        align-items: center;
+
+        &.in-stock::before {
+            content: "●";
+            margin-right: 8px;
+            font-size: 18px; // Larger bullet for product cards (increased from 16px)
+            color: $color-success; // Green
+            line-height: 1;
+            flex-shrink: 0;
+        }
+
+        &.out-of-stock::before {
+            content: "●";
+            margin-right: 8px;
+            font-size: 18px; // Larger bullet for product cards (increased from 16px)
+            color: $color-secondary; // Red (#d20000)
+            line-height: 1;
+            flex-shrink: 0;
+        }
+    }
+}

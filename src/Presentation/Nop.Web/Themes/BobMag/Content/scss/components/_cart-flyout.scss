@@ -1,0 +1,51 @@
+// ===================================================================
+// Shopping Cart Flyout (Hover Popup)
+// Styling for mini cart that appears on hover
+// ===================================================================
+
+.flyout-cart {
+    .mini-shopping-cart {
+        .items {
+            .item {
+                .product {
+                    // Product name link - use default text color instead of blue
+                    .name a {
+                        color: $color-text !important; // Default text color (dark gray)
+                        text-decoration: none;
+
+                        &:hover {
+                            color: $color-success !important; // Green on hover
+                            text-decoration: underline;
+                        }
+                    }
+
+                    // Price and Quantity - much smaller font
+                    .price,
+                    .quantity {
+                        font-size: 12px !important; // Smaller (was probably 14-16px)
+                        color: lighten($color-text, 20%); // Lighter gray
+                        margin: 2px 0;
+
+                        span {
+                            font-weight: 500; // Slightly bolder for the value
+                        }
+                    }
+
+                    // Price - even more subtle
+                    .price {
+                        font-size: 11px !important;
+                    }
+                }
+            }
+        }
+
+        // Totals (Zwischensumme) - keep readable but not too prominent
+        .totals {
+            font-size: 14px;
+
+            strong {
+                font-weight: 600;
+            }
+        }
+    }
+}

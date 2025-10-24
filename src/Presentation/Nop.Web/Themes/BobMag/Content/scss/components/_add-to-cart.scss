@@ -1,0 +1,286 @@
+// ===================================================================
+// Add to Cart Component Styling
+// Modern horizontal layout with quantity controls
+// ===================================================================
+
+.add-to-cart {
+    margin: 20px 0;
+
+    // Hide label but keep for accessibility
+    .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border-width: 0;
+    }
+
+    .min-qty-notification {
+        padding: 10px;
+        background-color: #fff3cd;
+        border: 1px solid #ffc107;
+        border-radius: 4px;
+        margin-bottom: 15px;
+        color: #856404;
+        font-size: 14px;
+    }
+
+    // Main panel with flexbox layout
+    .add-to-cart-panel {
+        display: flex !important;
+        align-items: center !important;
+        gap: 20px !important; // More spacing between quantity control and button
+        flex-wrap: nowrap !important;
+
+        @media (max-width: 480px) {
+            flex-direction: column;
+            gap: 12px;
+        }
+    }
+
+    // Quantity control wrapper (minus, input, plus)
+    .qty-control-wrapper {
+        display: flex;
+        align-items: center;
+        gap: 0; // No gap - they touch each other
+        flex-shrink: 0;
+        background-color: #f7f5f2; // Very light gray (almost white)
+        border-radius: 28px; // Slightly larger for plus button to pop out
+        padding: 4px;
+        padding-right: 0; // No padding on right so plus button can extend
+
+        @media (max-width: 480px) {
+            width: auto;
+        }
+    }
+
+    // Quantity buttons (minus/plus)
+    .qty-button {
+        color: #fff;
+        border: none;
+        border-radius: 50%; // Perfectly round
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        user-select: none;
+        flex-shrink: 0;
+
+        &.qty-minus {
+            background-color: #f7f5f2; // Very light gray (same as wrapper)
+            color: #706e6a; // Dark gray text
+            width: 40px;
+            height: 40px;
+            font-size: 20px;
+            font-weight: 300; // Very thin minus
+            line-height: 1;
+
+            &:hover:not(:disabled) {
+                background-color: darken(#f7f5f2, 5%);
+            }
+
+            &:active:not(:disabled) {
+                background-color: darken(#f7f5f2, 10%);
+            }
+
+            &:disabled {
+                background-color: #f7f5f2;
+                color: #c3beb6;
+                cursor: not-allowed;
+            }
+        }
+
+        &.qty-plus {
+            background-color: $color-success; // Green from variables
+            color: #fff;
+            width: 56px;  // Larger - pops out of wrapper
+            height: 56px; // Larger - pops out of wrapper
+            font-size: 28px;
+            font-weight: 700; // Bold plus
+            line-height: 1;
+            margin: -4px; // Negative margin to pop out of wrapper padding
+
+            &:hover:not(:disabled) {
+                background-color: darken($color-success, 8%);
+            }
+
+            &:active:not(:disabled) {
+                background-color: darken($color-success, 12%);
+            }
+
+            &:disabled {
+                background-color: lighten($color-success, 30%);
+                cursor: not-allowed;
+            }
+        }
+    }
+
+    // Quantity input field
+    .qty-input {
+        width: 48px;
+        height: 40px;
+        border: none; // No visible border
+        background-color: transparent; // Transparent - shows wrapper background
+        text-align: center;
+        font-size: 18px;
+        font-weight: 700;
+        color: #333;
+        padding: 0;
+
+        // Remove number input spinners
+        &::-webkit-outer-spin-button,
+        &::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        &[type=number] {
+            -moz-appearance: textfield;
+        }
+
+        &:focus {
+            outline: none;
+            background-color: rgba(255, 255, 255, 0.5);
+        }
+    }
+
+    // Quantity dropdown (for fixed quantity options)
+    .qty-dropdown {
+        height: 48px;
+        border: none;
+        background-color: transparent;
+        padding: 0 30px 0 15px;
+        font-size: 16px;
+        font-weight: 600;
+        color: #333;
+        cursor: pointer;
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23333' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 10px center;
+
+        &:focus {
+            outline: 2px solid #ef6c00;
+            outline-offset: 2px;
+        }
+    }
+
+    // Add to cart button (override .button-1 styles with !important)
+    .add-to-cart-button {
+        background-color: $color-primary !important;
+        color: $color-white !important;
+        border: none !important;
+        border-radius: 100px !important; // Perfect pill shape - must override !important from _buttons.scss
+        padding: 0 32px !important;
+        font-size: 15px !important;
+        font-weight: 700 !important;
+        text-transform: uppercase !important;
+        cursor: pointer;
+        transition: all 0.2s ease !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        gap: 10px;
+        flex-grow: 1;
+        height: 56px !important;
+        white-space: nowrap !important;
+        min-width: 200px !important;
+        width: auto !important;
+
+        &:hover {
+            background-color: darken($color-primary, 8%) !important;
+            transform: translateY(-1px) !important;
+            box-shadow: 0 4px 12px rgba($color-primary, 0.3) !important;
+        }
+
+        &:active {
+            background-color: darken($color-primary, 12%) !important;
+            transform: translateY(0) !important;
+            box-shadow: 0 2px 6px rgba($color-primary, 0.2) !important;
+        }
+
+        .cart-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1;
+            color: #fff;
+
+            svg {
+                width: 24px;
+                height: 24px;
+                fill: currentColor;
+            }
+        }
+
+        .cart-text {
+            line-height: 1;
+            letter-spacing: 0.5px;
+            color: #fff;
+        }
+
+        @media (max-width: 480px) {
+            width: 100% !important;
+            height: 56px;
+            padding: 0 28px;
+        }
+    }
+
+    // Pre-order availability date
+    .pre-order-availability-date {
+        margin-top: 12px;
+        padding: 10px;
+        background-color: #e3f2fd;
+        border: 1px solid #90caf9;
+        border-radius: 4px;
+        font-size: 14px;
+        color: #1565c0;
+
+        label {
+            font-weight: 600;
+            margin-right: 5px;
+        }
+    }
+
+    // Customer entered price section
+    .customer-entered-price {
+        margin-bottom: 15px;
+
+        .price-input {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+
+            label {
+                font-weight: 600;
+                color: #333;
+            }
+
+            .enter-price-input {
+                width: 120px;
+                padding: 8px 12px;
+                border: 2px solid #ddd;
+                border-radius: 4px;
+                font-size: 16px;
+
+                &:focus {
+                    outline: none;
+                    border-color: #ef6c00;
+                }
+            }
+        }
+
+        .price-range {
+            font-size: 13px;
+            color: #666;
+            padding-left: 2px;
+        }
+    }
+}

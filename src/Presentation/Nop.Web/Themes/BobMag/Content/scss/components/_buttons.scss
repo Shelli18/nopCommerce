@@ -1,0 +1,88 @@
+// ===== BOB-MAG BUTTONS =====
+
+// Hauptbuttons (Orange CTA, Hover, Disabled etc.)
+.button,
+.button-1,
+.button-2,
+.add-to-cart-button,
+.product-box-add-to-cart-button,
+.cart-button-header-orange,
+.search-box-button {
+  display: inline-block !important;
+  vertical-align: middle;
+  text-align: center;
+  white-space: nowrap;
+
+  background-color: $color-primary !important; // #ef6c00 Orange
+  color: $color-white !important;
+  font-weight: 600;
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  line-height: 1.2;
+
+  border: none !important;
+  border-radius: $radius-md !important; // 12px
+  padding: 0.5rem 1rem !important;
+  min-width: auto;
+  width: auto !important;
+
+  cursor: pointer;
+  transition: background-color 0.25s ease, transform 0.1s ease;
+
+  &:hover {
+    background-color: darken($color-primary, 5%) !important;
+    text-decoration: none;
+  }
+
+  &:active {
+    transform: scale(0.98);
+  }
+
+  &:focus {
+    @include focus-ring;
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+// Item-Box spezifischer Button (Breite wird durch .buttons container gesteuert)
+.item-box .product-box-add-to-cart-button {
+  text-align: center;
+  font-size: 0.875rem;
+}
+
+// Search-Box Button
+.search-box .search-box-button {
+  text-align: center;
+  padding: 0 15px;
+}
+
+// Button-Varianten
+.button--primary {
+  background: $color-primary !important;
+  color: $color-white !important;
+}
+
+.button--secondary {
+  background: $color-secondary !important;
+  color: $color-white !important;
+}
+
+.button--success {
+  background: $color-success !important;
+  color: $color-white !important;
+}
+
+.button--ghost {
+  background: transparent !important;
+  color: $color-primary !important;
+  border: 2px solid $color-primary;
+
+  &:hover {
+    background: $color-primary !important;
+    color: $color-white !important;
+  }
+}

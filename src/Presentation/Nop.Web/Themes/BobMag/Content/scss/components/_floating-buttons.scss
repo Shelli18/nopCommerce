@@ -1,0 +1,315 @@
+// ===== FLOATING BUTTONS (BOB-MAG Style) =====
+// Buttons die über dem Produktbild schweben
+
+// Container für floating buttons im Produktbild
+.product-item,
+.item-box,
+.item-box-overlay {
+  .picture,
+  .product-picture {
+    position: relative;
+
+    // Button-Container über Bild
+    .button-group-overlay,
+    .buttons-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      pointer-events: none; // Bild bleibt klickbar
+      z-index: 2;
+    }
+  }
+}
+
+// Warenkorb-Button (rechts unten, groß, grün)
+.add-to-cart-button-floating,
+.button-add-to-cart-overlay {
+  position: absolute !important;
+  bottom: 12px;
+  right: 12px;
+
+  width: 56px !important;
+  height: 56px !important;
+  min-width: 56px;
+
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+
+  background-color: $color-success !important; // #4e9521 Grün
+  color: $color-white !important;
+
+  border: none !important;
+  border-radius: 50% !important; // Perfekt rund
+
+  padding: 0 !important;
+
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+
+  cursor: pointer;
+  pointer-events: auto;
+
+  transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+
+  // Icon sichtbar, Text versteckt
+  span,
+  .button-text {
+    display: none;
+  }
+
+  &::before {
+    content: '';
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    background-image: url("data:image/svg+xml,%3Csvg width='24' height='24' viewBox='0 0 24 24' fill='white' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M1 2.75C1 2.33579 1.33579 2 1.75 2H2.27029C3.34283 2 4.26626 2.75703 4.4766 3.80874L4.71485 5H20.2676C21.3791 5 22.209 6.02281 21.98 7.11052L20.5682 13.8165C20.3003 15.0891 19.1777 16 17.8772 16H7.63961C6.32874 16 5.20009 15.0747 4.94301 13.7893L3.00573 4.10291C2.93562 3.75234 2.6278 3.5 2.27029 3.5H1.75C1.33579 3.5 1 3.16421 1 2.75ZM6 19C6 17.8954 6.89543 17 8 17C9.10457 17 10 17.8954 10 19C10 20.1046 9.10457 21 8 21C6.89543 21 6 20.1046 6 19ZM15 19C15 17.8954 15.8954 17 17 17C18.1046 17 19 17.8954 19 19C19 20.1046 18.1046 21 17 21C15.8954 21 15 20.1046 15 19Z'/%3E%3C/svg%3E");
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    line-height: 1;
+  }
+
+  &:hover {
+    background-color: darken($color-success, 8%) !important;
+    transform: scale(1.05);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+}
+
+// Alternative: Mit Font-Awesome Icon
+.add-to-cart-button-floating.with-icon::before,
+.button-add-to-cart-overlay.with-icon::before {
+  content: "\f07a"; // Font Awesome Shopping Cart
+  font-family: "Font Awesome 5 Free", "FontAwesome";
+  font-weight: 900;
+  font-size: 20px;
+}
+
+// Merken-Button (rechts oben, klein, weiß mit Herz)
+.add-to-wishlist-button-floating,
+.button-wishlist-overlay {
+  position: absolute !important;
+  top: 12px;
+  right: 12px;
+
+  width: 40px !important;
+  height: 40px !important;
+  min-width: 40px;
+
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+
+  background-color: $color-white !important;
+  color: $color-secondary !important; // Rotes Herz
+
+  border: 2px solid $color-border !important;
+  border-radius: 50% !important;
+
+  padding: 0 !important;
+
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+
+  cursor: pointer;
+  pointer-events: auto;
+
+  transition: all 0.2s ease;
+
+  span,
+  .button-text {
+    display: none;
+  }
+
+  &::before {
+    content: "♡"; // Leeres Herz
+    font-size: 20px;
+    line-height: 1;
+  }
+
+  &:hover {
+    background-color: $color-secondary !important;
+    color: $color-white !important;
+    border-color: $color-secondary !important;
+    transform: scale(1.1);
+  }
+
+  &.active::before,
+  &.wishlisted::before {
+    content: "♥"; // Volles Herz
+  }
+}
+
+// Vergleich-Button (rechts oben, unter Merken)
+.add-to-compare-button-floating,
+.button-compare-overlay {
+  position: absolute !important;
+  top: 60px; // 12px + 40px + 8px spacing
+  right: 12px;
+
+  width: 40px !important;
+  height: 40px !important;
+  min-width: 40px;
+
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+
+  background-color: $color-white !important;
+  color: $color-text !important;
+
+  border: 2px solid $color-border !important;
+  border-radius: 50% !important;
+
+  padding: 0 !important;
+
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+
+  cursor: pointer;
+  pointer-events: auto;
+
+  transition: all 0.2s ease;
+
+  span,
+  .button-text {
+    display: none;
+  }
+
+  &::before {
+    content: "⚖"; // Waage-Symbol
+    font-size: 18px;
+    line-height: 1;
+  }
+
+  &:hover {
+    background-color: $color-primary !important;
+    color: $color-white !important;
+    border-color: $color-primary !important;
+    transform: scale(1.1);
+  }
+}
+
+// nopCommerce spezifische Selektoren
+.product-item,
+.item-box {
+
+  // Warenkorb-Button aus .buttons Container
+  .buttons .add-to-cart-button,
+  .add-info .add-to-cart-button {
+    // Wenn Button im Bild-Container sein soll
+    // Wird per JS oder View-Override verschoben
+  }
+
+  // Wishlist-Button
+  .buttons .add-to-wishlist-button,
+  .overview-buttons .add-to-wishlist-button {
+    // Styling siehe oben
+  }
+
+  // Compare-Button
+  .buttons .add-to-compare-list-button,
+  .overview-buttons .add-to-compare-list-button {
+    // Styling siehe oben
+  }
+}
+
+// Verstecke Standard-Button-Container wenn Floating aktiv
+.product-item.floating-buttons-active,
+.item-box.floating-buttons-active {
+  .buttons,
+  .add-info {
+    display: none !important;
+  }
+}
+
+// Responsive: Kleinere Buttons auf Mobile
+@media (max-width: 576px) {
+  .add-to-cart-button-floating,
+  .button-add-to-cart-overlay {
+    width: 40px !important;
+    height: 40px !important;
+    bottom: 6px !important;
+    right: 6px !important;
+
+    &::before {
+      width: 18px !important;
+      height: 18px !important;
+      font-size: 18px;
+    }
+  }
+
+  .add-to-wishlist-button-floating,
+  .button-wishlist-overlay,
+  .add-to-compare-button-floating,
+  .button-compare-overlay {
+    width: 32px !important;
+    height: 32px !important;
+    top: 6px !important;
+    right: 6px !important;
+
+    &::before {
+      font-size: 14px !important;
+    }
+  }
+
+  .add-to-compare-button-floating,
+  .button-compare-overlay {
+    top: 44px !important; // 6px + 32px + 6px
+  }
+}
+
+// Zusätzliche Utility-Klassen
+
+// Quick-View Button (optional, mittig unten)
+.quick-view-button-floating {
+  position: absolute !important;
+  bottom: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+
+  width: auto !important;
+  height: 36px !important;
+
+  padding: 0 16px !important;
+
+  background-color: rgba(255, 255, 255, 0.95) !important;
+  color: $color-text !important;
+
+  border: 2px solid $color-border !important;
+  border-radius: 18px !important;
+
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  white-space: nowrap;
+
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+
+  pointer-events: auto;
+
+  &:hover {
+    background-color: $color-white !important;
+    border-color: $color-primary !important;
+    color: $color-primary !important;
+  }
+}
+
+// Badge-Position anpassen wenn Floating Buttons aktiv
+.product-item,
+.item-box {
+  .product-ribbon,
+  .ribbon,
+  .badge--deal {
+    // Platz für Wishlist/Compare Buttons lassen
+    &.ribbon--corner {
+      top: 12px;
+      left: 12px; // Links statt rechts
+      right: auto;
+    }
+  }
+}

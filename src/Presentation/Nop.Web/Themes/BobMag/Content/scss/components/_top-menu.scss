@@ -1,0 +1,46 @@
+// ===================================================================
+// Top Menu / Category Navigation
+// Green background with white text (BobMag brand color)
+// ===================================================================
+
+@media (min-width: 1001px) {
+    // Add green background to menu container with shadow
+    .menu-container {
+        background-color: $color-success !important; // Green (#4e9521)
+        padding: 20px; // Standard padding
+        transition: padding 0.3s ease, box-shadow 0.3s ease; // Smooth transition
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); // Subtiler Schatten unterhalb
+    }
+
+    // Shrink menu container when header is scrolled
+    .header.scrolled + .header-menu .menu-container,
+    .master-wrapper-page .header.scrolled + .header-menu .menu-container {
+        padding: 12px 20px !important; // Etwas mehr Padding (war 10px, jetzt 12px)
+    }
+
+    // Remove white background and borders from menu items (override cleandefault.css #fff)
+    .menu > .menu__item {
+        background-color: transparent !important; // Remove white background
+        border-right: none !important; // Remove separator lines
+    }
+
+    // White text color for menu links (both direct links and toggle wrappers)
+    .menu > .menu__item > .menu__link,
+    .menu > .menu__item > .menu__item-toggle .menu__link {
+        color: $color-white !important; // White text on green background
+        font-weight: 600 !important; // Bold for better readability on green background
+    }
+
+    // Also make the toggle wrapper transparent and white
+    .menu__item-toggle {
+        background-color: transparent !important;
+        color: $color-white !important;
+    }
+
+    // Hover effect: slightly darker green background
+    .menu > .menu__item > .menu__link:hover,
+    .menu > .menu__item > .menu__item-toggle .menu__link:hover {
+        background-color: darken($color-success, 8%) !important;
+        color: $color-white !important;
+    }
+}

@@ -1,0 +1,102 @@
+// ===================================================================
+// Homepage Category Grid
+// Smaller, cleaner category boxes for the homepage
+// ===================================================================
+
+.home-page-category-grid,
+.sub-category-grid {
+  padding: 2rem 0 !important;
+  margin: 0 !important;
+
+  .item-grid {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)) !important;
+    gap: 1.5rem !important;
+
+    @media (max-width: 768px) {
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)) !important;
+      gap: 1rem !important;
+    }
+
+    @media (max-width: 576px) {
+      grid-template-columns: repeat(2, 1fr) !important;
+      gap: 0.75rem !important;
+    }
+  }
+
+  // Category item/box
+  .item-box {
+    display: flex !important;
+    flex-direction: column-reverse !important; // Picture first, then title
+    text-align: center !important;
+    background: $color-white !important;
+    border-radius: $radius-lg !important;
+    padding: 1rem !important;
+    transition: transform 0.2s ease, box-shadow 0.2s ease !important;
+    border: 1px solid $color-border !important;
+    width: auto !important;
+    height: auto !important;
+
+    &:hover {
+      transform: translateY(-4px) !important;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+
+      .picture img {
+        transform: scale(1.05) !important;
+      }
+    }
+
+    // Title (comes BEFORE picture in HTML, but appears below with column-reverse)
+    .title,
+    h2 {
+      font-size: 0.95rem !important;
+      font-weight: 600 !important;
+      color: $color-text !important;
+      margin: 1rem 0 0 0 !important;
+      line-height: 1.3 !important;
+
+      a {
+        color: $color-text !important;
+        text-decoration: none !important;
+
+        &:hover {
+          color: $color-primary !important;
+        }
+      }
+    }
+
+    // Picture container
+    .picture {
+      position: relative !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      overflow: hidden !important;
+      border-radius: $radius-md !important;
+      background: $color-white !important;
+      height: 200px !important;
+      min-height: 200px !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+
+      a {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        width: 100% !important;
+        height: 100% !important;
+      }
+
+      img {
+        width: 100% !important;
+        height: 100% !important;
+        min-width: 100% !important;
+        min-height: 100% !important;
+        max-width: none !important;
+        max-height: none !important;
+        object-fit: contain !important;
+        transition: transform 0.3s ease !important;
+      }
+    }
+  }
+}

@@ -1,0 +1,198 @@
+// ===== BOB-MAG PRODUCT CARDS =====
+
+// NUR für Produktlisten, NICHT für Kategorien!
+.product-grid,
+.home-page-product-grid {
+  .item-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: $space-6;
+
+    @media (max-width: 768px) {
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: $space-4;
+    }
+
+    @media (max-width: 576px) {
+      grid-template-columns: 1fr;
+      gap: $space-4;
+    }
+  }
+
+  // Äußerer Container (soll Border/Shadow haben)
+  .item-box {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+
+    // Rahmen NUR auf dem äußeren Container!
+    border-radius: $radius-card;
+    background: $color-white;
+    border: 1px solid $color-border !important;
+    box-shadow: none !important;
+    padding: $space-4;
+    height: 100%;
+
+    // WICHTIG: width überschreiben für Grid-Layout!
+    width: auto !important;
+    margin: 0 !important;
+
+    transition: border-color 0.15s ease, outline 0.15s ease;  // Schnellere Transition
+
+    &:hover {
+      // Border-Farbe ändern + Outline nach außen (verschiebt Inhalt nicht!)
+      border-color: $color-success !important;  // Grün
+      outline: 2px solid $color-success !important;  // Zusätzlicher Rahmen nach außen
+      outline-offset: -1px;  // Leicht nach innen versetzt für nahtlosen Look
+    }
+  }
+
+  // Innerer Container (KEIN Border, nur Layout!)
+  .product-item {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+
+    // KEIN Border/Shadow für inneren Container!
+    border: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
+    padding: 0 !important;
+    border-radius: 0 !important;
+  }
+
+  // Gemeinsame Styles für beide Container
+  .item-box,
+  .product-item {
+    // Produktbild
+    .picture {
+      margin-bottom: $space-4;
+      text-align: center;
+      position: relative;
+      min-height: 200px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      a {
+        display: block;
+        width: 100%;
+      }
+
+      img {
+        border-radius: $radius-md;
+        width: 100%;
+        height: auto;
+        max-height: 250px;
+        object-fit: contain;
+      }
+    }
+
+    // Details-Container
+    .details {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+    }
+
+    // Produkt-Titel
+    .product-title {
+      font-size: 1rem;
+      color: $color-text;
+      font-weight: 500;
+      margin-bottom: $space-3;
+      line-height: 1.4;
+      min-height: 2.8em;
+
+      a {
+        color: $color-text;
+        text-decoration: none;
+        display: block;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+
+        &:hover {
+          color: $color-primary;
+        }
+      }
+    }
+
+    // Rating
+    .product-rating-box {
+      margin-bottom: $space-2;
+      height: 20px;
+    }
+
+    // Beschreibung
+    .description {
+      font-size: 0.875rem;
+      color: lighten($color-text, 15%);
+      line-height: 1.5;
+      margin-bottom: $space-3;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+    }
+
+    // add-info Container
+    .add-info {
+      margin-top: auto;
+    }
+
+    // Preis-Container
+    .prices {
+      margin-bottom: $space-3;
+    }
+
+    // Button-Container
+    .buttons {
+      display: flex;
+      flex-direction: column;
+      gap: $space-2;
+
+      button {
+        width: 100%;
+        font-size: 0.875rem;
+        padding: 0.5rem 1rem;
+      }
+    }
+
+    // Ribbons / Badges
+    .product-ribbon,
+    .ribbon {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      z-index: 1;
+    }
+  }
+}
+
+// Liste-Layout für Produktlisten
+.product-list {
+  display: flex;
+  flex-direction: column;
+  gap: $space-4;
+
+  .product-item {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    .picture {
+      flex: 0 0 200px;
+      margin-right: $space-4;
+      margin-bottom: 0;
+    }
+
+    .details {
+      flex: 1;
+    }
+  }
+}

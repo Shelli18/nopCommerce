@@ -1,0 +1,76 @@
+// ===== PRICE STYLING (BOB-MAG Style) =====
+
+// Hauptpreis (Grün)
+.price,
+.product-price,
+.actual-price,
+.prices .price {
+  color: $color-success !important; // #4e9521 Grün
+  font-weight: 700;
+  font-size: 1.25rem;
+  line-height: 1.2;
+}
+
+// Alter Preis (durchgestrichen, rot)
+.old-price,
+.old-product-price {
+  color: $color-secondary; // #d20000 Rot
+  text-decoration: line-through;
+  margin-right: 6px;
+  font-weight: 400;
+  font-size: 1rem;
+  opacity: 0.8;
+}
+
+// MwSt. & Versandinfo
+.tax-shipping-info,
+.price-vat-note,
+.tax-note {
+  font-size: 0.875rem;
+  color: $color-text;
+  opacity: 0.8;
+  margin-top: 4px;
+  line-height: 1.3;
+}
+
+// Preis-Container
+.prices {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: $space-3;
+
+  .price-wrapper {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+  }
+}
+
+// Große Preis-Anzeige (z.B. Produktdetails)
+.product-price-large {
+  font-size: 2rem;
+  font-weight: 700;
+  color: $color-success;
+}
+
+// Rabatt-Prozentsatz anzeigen
+.price-discount-percentage {
+  display: inline-block;
+  background: $color-secondary;
+  color: $color-white;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  font-weight: 700;
+  margin-left: 8px;
+  vertical-align: middle;
+}
+
+// Gestrichene UVP / Listenpreis
+.msrp-price,
+.list-price {
+  color: lighten($color-text, 20%);
+  text-decoration: line-through;
+  font-size: 0.9rem;
+}

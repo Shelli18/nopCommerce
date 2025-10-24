@@ -1,0 +1,43 @@
+// ===== BOB-MAG THEME TOKENS =====
+
+// Hauptfarben
+$color-primary: #ef6c00;     // Orange: Buttons, "In den Warenkorb"
+$color-secondary: #d20000;   // Rot: Deals, Warnungen
+$color-success: #4e9521;     // Grün: Badges, "Kostenloser Versand"
+$color-success-alt: #54b65f; // Helleres Grün (manche Ribbons)
+$color-text: #404040;        // Standard-Textfarbe
+$color-bg: #f3f3f3;          // Seitenhintergrund
+$color-white: #ffffff;
+$color-border: #e0e0e0;      // Rahmenfarbe für Karten usw.
+
+// Typografie
+$font-base: 'Roboto', 'Segoe UI', Helvetica, Arial, sans-serif;
+$font-size-base: 16px;
+$line-height-base: 1.5;
+$font-weight-base: 300;      // "lighter"
+
+// Ecken & Abstände
+$radius-sm: 8px;
+$radius-md: 12px;
+$radius-lg: 15px;
+$radius-card: 15px;          // Karten / Item-Boxen
+
+$space-1: .25rem;
+$space-2: .5rem;
+$space-3: .75rem;
+$space-4: 1rem;
+$space-6: 1.5rem;
+$space-8: 2rem;
+$space-12: 3rem;
+
+// Schatten
+$shadow-soft: 0 2px 4px rgba(0,0,0,.06);
+$shadow-hover: 0 6px 18px rgba(0,0,0,.12);
+
+// Container & Layout
+$container-max: 1200px;
+
+// Z-index scale
+$z-header: 100;
+$z-overlay: 900;
+$z-modal: 1000;

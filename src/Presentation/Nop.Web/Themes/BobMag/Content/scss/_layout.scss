@@ -1,0 +1,17 @@
+// ===== LAYOUT =====
+.header, .master-wrapper-page .header {
+  position: sticky;
+  top: 0;
+  z-index: $z-header;
+  background: $color-white;
+  box-shadow: 0 1px 0 rgba(0,0,0,.06);
+}
+
+.footer {
+  margin-top: $space-12;
+  padding: $space-8 0;
+  background: darken($color-bg, 3%);
+  color: $color-text;
+}
+
+.master-wrapper-content { @include container; }

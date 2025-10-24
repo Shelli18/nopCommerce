@@ -1,0 +1,260 @@
+// ===================================================================
+// Product Overview Section (Product Details Page - Right Column)
+// Improved spacing and line-height for better readability
+// ===================================================================
+
+.product-essential {
+    .overview {
+        // Better line-height for all text elements
+        line-height: 1.6;
+
+        // Product name/title
+        h1 {
+            line-height: 1.4;
+            margin-bottom: 20px;
+        }
+
+        // Short description
+        .short-description {
+            line-height: 1.7;
+            margin-bottom: 24px;
+        }
+
+        // Manufacturer section
+        .manufacturers {
+            margin-bottom: 24px;
+            line-height: 1.6;
+        }
+
+        // SKU, Stock availability, etc.
+        .product-sku,
+        .stock-availability {
+            line-height: 1.6;
+            margin-bottom: 12px;
+        }
+
+        // Price section - more space around it
+        .product-price-box {
+            margin: 28px 0 !important;
+            line-height: 1.5;
+
+            .price {
+                line-height: 1.3;
+            }
+        }
+
+        // Variants header (if applicable)
+        .variants-header {
+            margin-top: 32px;
+            margin-bottom: 16px;
+            line-height: 1.4;
+        }
+
+        // Variant dropdown container
+        .variant-dropdown-container {
+            margin-bottom: 24px;
+        }
+
+        // Add-to-cart section
+        .variant-addtocart-section {
+            margin-top: 24px;
+            margin-bottom: 24px;
+
+            .addtocart-block {
+                margin-bottom: 20px;
+            }
+        }
+
+        // Action buttons (Wishlist, Compare, Email) - more space from above
+        .overview-buttons {
+            margin-top: 32px !important; // More space from add-to-cart section
+            margin-bottom: 24px !important;
+        }
+
+        // Share button section
+        .share-button-wrapper {
+            margin-top: 24px;
+        }
+
+        // General spacing for paragraphs and divs
+        p {
+            line-height: 1.7;
+            margin-bottom: 16px;
+
+            &:last-child {
+                margin-bottom: 0;
+            }
+        }
+
+        // Additional details section - no margin when empty or only whitespace
+        .additional-details {
+            // Default: no margin (for empty or whitespace-only elements)
+            margin: 0 !important;
+
+            // Only add margin if it has actual child elements (not just text/whitespace)
+            &:has(*) {
+                margin: 0 0 20px !important;
+            }
+        }
+
+        // Specific links to green (Manufacturer link and Shipping link)
+        .value a,
+        .tax-shipping-info a {
+            color: $color-success !important; // Green instead of blue
+
+            &:hover {
+                color: darken($color-success, 10%) !important;
+            }
+
+            &:visited {
+                color: $color-success !important;
+            }
+        }
+    }
+}
+
+// Variant overview - same green links
+.variant-overview {
+    .value a,
+    .tax-shipping-info a {
+        color: $color-success !important; // Green instead of blue
+
+        &:hover {
+            color: darken($color-success, 10%) !important;
+        }
+
+        &:visited {
+            color: $color-success !important;
+        }
+    }
+}
+
+// Additional details in variant overview
+.variant-overview {
+    .additional-details {
+        // Default: no margin (for empty or whitespace-only elements)
+        margin: 0 !important;
+
+        // Only add margin if it has actual child elements (not just text/whitespace)
+        &:has(*) {
+            margin: 0 0 20px !important;
+        }
+    }
+}
+
+// ===================================================================
+// Variants Dropdown Wrapper - Additional spacing
+// ===================================================================
+.product-variant-dropdown-wrapper {
+    margin-top: 28px;
+    margin-bottom: 28px;
+}
+
+// ===================================================================
+// Mobile: Linksbündige Texte auf Produktdetailseiten
+// ===================================================================
+@media (max-width: 768px) {
+    .product-essential .overview {
+        text-align: left !important;
+
+        // Produkttitel
+        h1, h2, h3, h4, h5, h6 {
+            text-align: left !important;
+        }
+
+        // Kurzbeschreibung
+        .short-description {
+            text-align: left !important;
+        }
+
+        // Hersteller
+        .manufacturers {
+            text-align: left !important;
+        }
+
+        // SKU, Lagerbestand, etc.
+        .product-sku,
+        .stock-availability,
+        .product-stock-availability {
+            text-align: left !important;
+        }
+
+        // Preisbereich
+        .product-price-box {
+            text-align: left !important;
+        }
+
+        // Varianten-Header
+        .variants-header {
+            text-align: left !important;
+        }
+
+        // Alle Paragraphen
+        p {
+            text-align: left !important;
+        }
+
+        // Alle divs mit Textinhalt
+        div {
+            text-align: left !important;
+        }
+
+        // Bewertungen
+        .product-review-box,
+        .product-rating-box {
+            text-align: left !important;
+            justify-content: flex-start !important;
+        }
+
+        // Additional details
+        .additional-details {
+            text-align: left !important;
+        }
+
+        // Labels und Values
+        .label,
+        .value {
+            text-align: left !important;
+        }
+    }
+
+    // Auch für Varianten-Übersicht
+    .variant-overview {
+        text-align: left !important;
+
+        h1, h2, h3, h4, h5, h6,
+        p, div,
+        .short-description,
+        .manufacturers,
+        .product-sku,
+        .stock-availability,
+        .product-price-box,
+        .additional-details,
+        .label,
+        .value {
+            text-align: left !important;
+        }
+    }
+
+    // Produktbeschreibung (Full Description Bereich)
+    .full-description {
+        text-align: left !important;
+
+        p, div, ul, ol {
+            text-align: left !important;
+        }
+    }
+
+    // Bewertungen Bereich
+    .product-reviews-page,
+    .product-review-list {
+        text-align: left !important;
+
+        .review-item,
+        .review-title,
+        .review-text,
+        .review-rating {
+            text-align: left !important;
+        }
+    }
+}

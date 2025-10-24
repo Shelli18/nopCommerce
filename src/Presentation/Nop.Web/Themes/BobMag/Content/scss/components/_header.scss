@@ -1,0 +1,181 @@
+// ===== BOB-MAG HEADER =====
+.header, .master-wrapper-page .header {
+  // Logo - bleibt immer gleich groß
+  .header-logo {
+    a {
+      display: inline-flex;
+      align-items: center;
+      gap: $space-2;
+    }
+
+    img {
+      max-width: 200px !important;
+      max-height: 80px !important;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+    }
+  }
+
+  // Header upper (Mein Konto, Abmelden, etc.) - bleibt immer gleich
+  .header-upper {
+    padding: $space-2 0; // Bleibt konstant
+  }
+
+  // Header lower (Logo + Suchfeld) - wird beim Scrollen schmaler
+  .header-lower {
+    padding: $space-4 0; // Standard padding
+    transition: padding 0.3s ease; // Smooth transition
+  }
+
+  // Shrink ONLY header-lower when scrolled
+  &.scrolled {
+    .header-lower {
+      padding: $space-2 0 !important; // Etwas mehr Padding als vorher (0.5rem statt 0.25rem)
+    }
+
+    // header-upper bleibt unverändert!
+  }
+
+  // Top-Navigation
+  .top-menu {
+    display: flex;
+    gap: $space-4;
+    flex-wrap: wrap;
+
+    a {
+      color: $color-text;
+      padding: $space-2 0;
+      font-weight: 500;
+      text-decoration: none;
+
+      &:hover {
+        color: $color-primary;
+      }
+    }
+  }
+
+  // Header-Links (Warenkorb, Wishlist etc.)
+  .header-links {
+    display: flex;
+    gap: $space-3;
+    align-items: center;
+
+    a {
+      color: $color-text;
+      font-size: 0.875rem;
+
+      &:hover {
+        color: $color-primary;
+      }
+    }
+
+    .ico-cart,
+    .ico-wishlist {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+
+      .cart-qty,
+      .wishlist-qty {
+        position: absolute;
+        top: -8px;
+        right: -8px;
+        background: $color-secondary;
+        color: $color-white;
+        border-radius: 50%;
+        width: 18px;
+        height: 18px;
+        font-size: 0.7rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+      }
+    }
+
+    // SVG Cart Icon (wie im Mobile-Header)
+    .ico-cart {
+      // Remove any old background images and content from parent theme
+      background-image: none !important;
+      background: none !important;
+      padding: 0 !important; // Remove padding for old icon
+
+      // Override old ::before content from parent theme
+      &::before {
+        content: '' !important;
+        display: inline-block !important;
+        width: 20px !important;
+        height: 20px !important;
+        background-image: url("data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 24 24' fill='currentColor' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M1 2.75C1 2.33579 1.33579 2 1.75 2H2.27029C3.34283 2 4.26626 2.75703 4.4766 3.80874L4.71485 5H20.2676C21.3791 5 22.209 6.02281 21.98 7.11052L20.5682 13.8165C20.3003 15.0891 19.1777 16 17.8772 16H7.63961C6.32874 16 5.20009 15.0747 4.94301 13.7893L3.00573 4.10291C2.93562 3.75234 2.6278 3.5 2.27029 3.5H1.75C1.33579 3.5 1 3.16421 1 2.75ZM6 19C6 17.8954 6.89543 17 8 17C9.10457 17 10 17.8954 10 19C10 20.1046 9.10457 21 8 21C6.89543 21 6 20.1046 6 19ZM15 19C15 17.8954 15.8954 17 17 17C18.1046 17 19 17.8954 19 19C19 20.1046 18.1046 21 17 21C15.8954 21 15 20.1046 15 19Z'/%3E%3C/svg%3E") !important;
+        background-size: contain !important;
+        background-repeat: no-repeat !important;
+        background-position: center !important;
+        flex-shrink: 0;
+        margin: 0 !important;
+        padding: 0 !important;
+        font-size: 0 !important; // Remove any text/icon-font content
+        vertical-align: middle;
+      }
+
+      // Remove old ::after if exists
+      &::after {
+        content: none !important;
+        display: none !important;
+      }
+    }
+  }
+}
+
+// Override specific #topcartlink styles
+#topcartlink a {
+  background: none !important;
+  background-image: none !important;
+  padding: 0 !important;
+}
+
+.header-links {
+  // Wishlist Icon (Herz)
+  .ico-wishlist {
+    background-image: none !important;
+
+    &::before {
+      content: '♡' !important;
+      font-size: 20px !important;
+      line-height: 1;
+      display: inline-block !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      vertical-align: middle;
+    }
+
+    &::after {
+      content: none !important;
+      display: none !important;
+    }
+  }
+}
+
+// Search-Box im Header
+.search-box {
+  display: flex;
+  gap: $space-2;
+
+  input[type="text"] {
+    flex: 1;
+    padding: 0.5rem 1rem;
+    border: 2px solid $color-border;
+    border-radius: $radius-md;
+    font-size: 1rem;
+
+    &:focus {
+      outline: none;
+      border-color: $color-primary;
+    }
+  }
+
+  .search-box-button {
+    // Bereits in _buttons.scss definiert
+  }
+}

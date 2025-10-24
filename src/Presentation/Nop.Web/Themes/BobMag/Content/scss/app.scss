@@ -1,0 +1,31 @@
+// Build order matters: tokens -> mixins -> utilities/base -> layout -> components
+@import "variables";
+@import "mixins";
+@import "utilities";
+@import "base";
+@import "layout";
+
+// Components
+@import "components/buttons";
+@import "components/floating-buttons";
+@import "components/badges";
+@import "components/prices";
+@import "components/add-to-cart"; // Add to cart with quantity controls
+@import "components/product-action-buttons"; // Wishlist, Compare, Recommend buttons
+@import "components/product-availability"; // Stock availability with colored indicators
+@import "components/product-overview"; // Product details page overview section spacing
+@import "components/product-card";
+@import "components/product-card-floating"; // WICHTIG: Nach product-card!
+@import "components/product-variants-dropdown"; // Variants dropdown system
+@import "components/cart-flyout"; // Shopping cart hover popup
+@import "components/search-box"; // Header search box with seamless input+button
+@import "components/top-menu"; // Category navigation gray background
+@import "components/header-links"; // Header cart & wishlist links
+@import "components/header";
+@import "components/header-mobile"; // Mobile header (Adidas-style)
+@import "components/membership-banner"; // Membership banner at top + newsletter modal
+@import "components/footer-trust-section"; // Trust section (above footer)
+@import "components/footer";
+@import "components/home-page-categories"; // Homepage category grid
+@import "components/welcome-section"; // Welcome section before footer on homepage
+@import "components/category-description"; // Category description styling (especially below products)

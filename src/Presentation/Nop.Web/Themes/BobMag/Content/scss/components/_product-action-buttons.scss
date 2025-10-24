@@ -1,0 +1,144 @@
+// ===================================================================
+// Product Action Buttons (Wishlist, Compare, Recommend)
+// Compact icon-only circular buttons (matching product-card style)
+// ===================================================================
+
+.overview-buttons {
+    display: flex !important;
+    gap: 8px !important;
+    align-items: center !important;
+    margin: 12px 0 !important;
+
+    // Hide wrapper divs styling, only show buttons
+    .add-to-wishlist,
+    .compare-products,
+    .email-a-friend {
+        display: contents; // Makes wrapper transparent in flex layout
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    // All buttons - white background with border (like product cards)
+    .button-2,
+    button {
+        // Reset default button styles
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+
+        // Make circular
+        width: 48px !important;
+        height: 48px !important;
+        min-width: 48px !important;
+        border-radius: 50% !important;
+
+        // White background with border (like product cards)
+        background-color: $color-white !important;
+        background-image: none !important; // Remove any existing background images
+        border: 2px solid $color-border !important;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+
+        // Remove text padding
+        padding: 0 !important;
+
+        // Hide text
+        font-size: 0 !important;
+        line-height: 0 !important;
+        text-indent: -9999px !important;
+        text-decoration: none !important;
+
+        // Transitions
+        transition: all 0.2s ease !important;
+        cursor: pointer;
+        position: relative;
+        overflow: visible !important;
+
+        // Remove any default outline
+        outline: none !important;
+
+        // Icon styling
+        &::before {
+            text-indent: 0 !important;
+            font-size: 24px;
+            line-height: 1;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: $color-success !important; // Green icons
+            font-weight: 400; // Normal weight for better rendering
+            font-family: Arial, sans-serif; // Better emoji rendering
+        }
+
+        &:hover {
+            background-color: $color-success !important; // Green background on hover
+            border-color: $color-success !important;
+            transform: scale(1.05);
+
+            &::before {
+                color: $color-white !important; // White icon on hover
+            }
+        }
+
+        &:active {
+            transform: scale(0.95);
+        }
+
+        &:focus {
+            outline: none !important;
+            box-shadow: 0 0 0 3px rgba($color-success, 0.2) !important;
+        }
+    }
+
+    // Wishlist button - heart icon (larger and filled)
+    .add-to-wishlist-button {
+        &::before {
+            content: "♥" !important; // Filled heart (more visible)
+            font-size: 26px !important;
+            font-weight: 400 !important;
+        }
+
+        &:hover::before {
+            content: "♥" !important; // Stay filled on hover
+            font-size: 28px !important; // Slightly bigger on hover
+        }
+    }
+
+    // Compare button - scales icon (thicker)
+    .add-to-compare-list-button {
+        &::before {
+            content: "≋" !important; // Alternative compare icon (thicker lines)
+            font-size: 24px !important;
+            font-weight: 700 !important;
+        }
+
+        // Keep same icon on hover
+        &:hover::before {
+            content: "≋" !important;
+        }
+    }
+
+    // Email a friend button - envelope icon (filled)
+    .email-a-friend-button {
+        &::before {
+            content: "✉" !important;
+            font-size: 24px !important;
+            font-weight: 400 !important;
+        }
+
+        // Keep same icon on hover
+        &:hover::before {
+            content: "✉" !important;
+        }
+    }
+}
+
+// ===================================================================
+// Wishlist-block wrapper (VariantsDropdown view)
+// The wishlist-block wrapper needs to be transparent (display: contents)
+// when shown, so it doesn't interfere with the flex layout
+// ===================================================================
+.wishlist-block {
+    // Will be set to "contents" by JavaScript when shown
+    // This makes the wrapper invisible in the flex layout
+}

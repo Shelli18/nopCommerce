@@ -1,0 +1,97 @@
+// ===================================================================
+// COMPONENT: CATEGORY DESCRIPTION
+// Styling for category descriptions (especially when below products)
+// ===================================================================
+
+.category-description {
+  margin-bottom: $space-8;
+  line-height: 1.7;
+  color: $color-text;
+
+  // When description appears below products
+  &.category-description-below {
+    margin-top: $space-12; // More space above when below products
+    margin-bottom: $space-8;
+    padding: $space-8;
+    background-color: $color-white;
+    border-radius: $radius-md;
+    border: 1px solid $color-border;
+
+    @media (max-width: 768px) {
+      margin-top: $space-8;
+      padding: $space-6;
+    }
+
+    // Optional: Add subtle visual separator
+    &::before {
+      content: "";
+      display: block;
+      width: 60px;
+      height: 3px;
+      background-color: $color-primary;
+      margin-bottom: $space-6;
+      border-radius: 2px;
+
+      @media (max-width: 768px) {
+        margin-bottom: $space-4;
+      }
+    }
+  }
+
+  // Typography within description
+  h2, h3 {
+    margin-top: $space-6;
+    margin-bottom: $space-4;
+    color: $color-text;
+    font-weight: 700;
+  }
+
+  h2 {
+    font-size: 1.5rem;
+
+    @media (max-width: 768px) {
+      font-size: 1.3rem;
+    }
+  }
+
+  h3 {
+    font-size: 1.25rem;
+
+    @media (max-width: 768px) {
+      font-size: 1.15rem;
+    }
+  }
+
+  p {
+    margin-bottom: $space-4;
+    line-height: 1.7;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  ul, ol {
+    margin: $space-4 0;
+    padding-left: $space-8;
+
+    li {
+      margin-bottom: $space-2;
+      line-height: 1.6;
+    }
+  }
+
+  strong {
+    font-weight: 700;
+    color: $color-text;
+  }
+
+  a {
+    color: $color-primary;
+    text-decoration: underline;
+
+    &:hover {
+      color: darken($color-primary, 10%);
+    }
+  }
+}

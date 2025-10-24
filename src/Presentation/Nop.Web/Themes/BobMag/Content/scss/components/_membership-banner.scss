@@ -1,0 +1,314 @@
+// ===================================================================
+// COMPONENT: MEMBERSHIP BANNER & MODAL
+// Red banner at top of page (like Adidas turquoise banner)
+// Modal dialog for newsletter signup
+// ===================================================================
+
+// === 1. FREE SHIPPING BANNER (Small, subtle, at very top) ===
+.free-shipping-banner {
+  width: 100%;
+  background-color: #c62828; // Softer red
+  color: $color-white;
+  padding: 6px 15px; // Smaller padding
+  font-size: 0.8rem; // Smaller font
+  font-weight: 600;
+  text-align: center;
+  line-height: 1.3;
+  margin: 0;
+
+  @media (max-width: 768px) {
+    font-size: 0.75rem;
+    padding: 5px 12px;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 0.7rem;
+    padding: 4px 10px;
+  }
+}
+
+// === 2. MEMBERSHIP BANNER (Below shipping banner) ===
+.membership-banner {
+  width: 100%;
+  background-color: #d20000; // Bob-Mag red
+  color: $color-white;
+  padding: 12px 20px;
+  margin: 0; // No margin
+  position: relative;
+  z-index: 100;
+
+  .membership-banner-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+
+    @media (max-width: 768px) {
+      gap: 0.75rem;
+      flex-direction: column;
+      text-align: center;
+    }
+  }
+
+  .membership-text {
+    font-size: 0.95rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+
+    @media (max-width: 768px) {
+      font-size: 0.85rem;
+    }
+  }
+
+  .membership-signup-link {
+    background-color: $color-white;
+    color: #d20000;
+    padding: 8px 24px;
+    border-radius: $radius-sm;
+    font-weight: 700;
+    font-size: 0.9rem;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    letter-spacing: 0.5px;
+    border: 2px solid $color-white;
+
+    &:hover {
+      background-color: transparent;
+      color: $color-white;
+      border-color: $color-white;
+    }
+
+    @media (max-width: 768px) {
+      font-size: 0.85rem;
+      padding: 6px 20px;
+    }
+  }
+}
+
+// === 2. NEWSLETTER MODAL ===
+.newsletter-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 9999;
+
+  // Modal Overlay (dark background)
+  .newsletter-modal-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    cursor: pointer;
+  }
+
+  // Modal Content Box
+  .newsletter-modal-content {
+    position: relative;
+    width: 90%;
+    max-width: 500px;
+    margin: 5vh auto;
+    background-color: $color-white;
+    border-radius: $radius-md;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    z-index: 10000;
+
+    @media (max-width: 768px) {
+      width: 95%;
+      margin: 2vh auto;
+    }
+  }
+
+  // Close Button
+  .newsletter-modal-close {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: none;
+    border: none;
+    font-size: 2rem;
+    line-height: 1;
+    color: #999;
+    cursor: pointer;
+    transition: color 0.2s ease;
+    padding: 0;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &:hover {
+      color: $color-text;
+    }
+  }
+
+  // Modal Body
+  .newsletter-modal-body {
+    padding: 2.5rem 2rem 2rem;
+
+    @media (max-width: 768px) {
+      padding: 2rem 1.5rem 1.5rem;
+    }
+  }
+
+  .newsletter-modal-title {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: $color-text;
+    margin-bottom: 0.75rem;
+    text-align: center;
+
+    @media (max-width: 768px) {
+      font-size: 1.5rem;
+    }
+  }
+
+  .newsletter-modal-intro {
+    font-size: 1rem;
+    color: #666;
+    text-align: center;
+    margin-bottom: 2rem;
+    line-height: 1.5;
+
+    @media (max-width: 768px) {
+      font-size: 0.95rem;
+      margin-bottom: 1.5rem;
+    }
+  }
+
+  // Email Input Field
+  .newsletter-email-field {
+    margin-bottom: 1.25rem;
+
+    input[type="email"] {
+      width: 100%;
+      padding: 0.875rem;
+      border: 2px solid #d0d0d0;
+      border-radius: $radius-sm;
+      font-size: 1rem;
+      transition: border-color 0.2s ease;
+
+      &:focus {
+        outline: none;
+        border-color: $color-primary;
+        box-shadow: 0 0 0 3px rgba($color-primary, 0.1);
+      }
+
+      &::placeholder {
+        color: #999;
+      }
+    }
+  }
+
+  // Disclaimer with Checkbox
+  .newsletter-modal-disclaimer {
+    margin-bottom: 1.5rem;
+
+    .newsletter-consent-label {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      font-size: 0.85rem;
+      color: #555;
+      line-height: 1.5;
+
+      input[type="checkbox"] {
+        margin-top: 0.2rem;
+        cursor: pointer;
+        flex-shrink: 0;
+      }
+    }
+
+    .newsletter-info-link {
+      color: $color-primary;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.8rem;
+      margin-left: 0.25rem;
+      transition: color 0.2s ease;
+      display: inline-block;
+
+      &:hover {
+        color: darken($color-primary, 10%);
+        text-decoration: underline;
+      }
+
+      &::before {
+        content: "▸ ";
+        display: inline-block;
+        transition: transform 0.3s ease;
+      }
+
+      &.expanded::before {
+        transform: rotate(90deg);
+      }
+    }
+
+    .newsletter-legal-text {
+      margin-top: 0.75rem;
+      padding: 0.75rem;
+      background-color: #f9f9f9;
+      border-left: 3px solid $color-primary;
+      border-radius: $radius-sm;
+      font-size: 0.7rem;
+      color: #666;
+      line-height: 1.6;
+
+      a {
+        color: $color-primary;
+        text-decoration: underline;
+
+        &:hover {
+          color: darken($color-primary, 10%);
+        }
+      }
+    }
+  }
+
+  // Subscribe Button
+  .newsletter-modal-subscribe-button {
+    width: 100%;
+    padding: 1rem;
+    background-color: $color-primary;
+    color: $color-white;
+    border: none;
+    border-radius: $radius-sm;
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+
+    &:hover {
+      background-color: darken($color-primary, 8%);
+    }
+  }
+
+  // Validation Messages
+  .newsletter-modal-validation {
+    margin-top: 1rem;
+    text-align: center;
+    font-size: 0.85rem;
+
+    .please-wait {
+      color: $color-primary;
+      font-weight: 600;
+    }
+  }
+
+  // Success/Error Result
+  .newsletter-modal-result {
+    padding: 1rem;
+    text-align: center;
+    font-size: 0.95rem;
+    line-height: 1.5;
+  }
+}

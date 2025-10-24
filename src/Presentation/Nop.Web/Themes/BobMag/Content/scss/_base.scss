@@ -1,0 +1,31 @@
+// ===== BASE =====
+html { font-size: 100%; }
+body {
+  font-family: $font-base;
+  font-size: $font-size-base;
+  line-height: $line-height-base;
+  font-weight: $font-weight-base;
+  color: $color-text;
+  background: $color-bg;
+  text-rendering: optimizeLegibility;
+}
+
+a {
+  color: $color-primary;
+  text-decoration: none;
+  &:hover { text-decoration: underline; }
+  &:focus { @include focus-ring; }
+}
+
+button, .button-1, .button-2, .button-3 {
+  cursor: pointer;
+  border: 0;
+  border-radius: $radius-sm;
+  padding: .625rem 1rem;
+  background: $color-primary;
+  color: $color-white;
+  transition: background .2s ease, transform .05s ease;
+  &:hover { background: darken($color-primary, 6%); }
+  &:active { transform: translateY(1px); }
+  &:focus { @include focus-ring; }
+}
