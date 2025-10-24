@@ -1,0 +1,11 @@
+[
+  {
+    "inputFile": "Themes/BobMag/Content/scss/app.scss",
+    "outputFile": "Themes/BobMag/Content/css/styles.css",
+    "options": {
+      "sourceMap": true,
+      "outputStyle": "compressed",
+      "autoprefixer": "last 2 versions"
+    }
+  }
+]
