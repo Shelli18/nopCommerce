@@ -1,0 +1,323 @@
+@model ProductDetailsModel
+
+@using Nop.Core
+@using Nop.Core.Domain.Catalog
+@using Nop.Core.Domain.Seo
+@using Nop.Services.Html
+
+@inject IHtmlFormatter htmlFormatter
+@inject IWebHelper webHelper
+@inject SeoSettings seoSettings
+
+@{
+    Layout = "_ColumnsOne";
+
+    //title
+    NopHtml.AddTitleParts(!string.IsNullOrEmpty(Model.MetaTitle) ? Model.MetaTitle : Model.Name);
+    //meta
+    NopHtml.AddMetaDescriptionParts(Model.MetaDescription);
+    NopHtml.AddMetaKeywordParts(Model.MetaKeywords);
+    //page class
+    NopHtml.AppendPageCssClassParts("html-product-details-page");
+
+    //canonical URL
+    if (seoSettings.CanonicalUrlsEnabled)
+    {
+        var productUrl = (await NopUrl.RouteGenericUrlAsync<Product>(new { SeName = Model.SeName }, webHelper.GetCurrentRequestProtocol())).ToLowerInvariant();
+        NopHtml.AddCanonicalUrlParts(productUrl);
+    }
+
+    //open graph META tags
+    if (seoSettings.OpenGraphMetaTags)
+    {
+        NopHtml.AddHeadCustomParts("<meta property=\"og:type\" content=\"product\" />");
+        NopHtml.AddHeadCustomParts("<meta property=\"og:title\" content=\"" + Html.Encode(Model.Name) + "\" />");
+        NopHtml.AddHeadCustomParts("<meta property=\"og:description\" content=\"" + Html.Encode(htmlFormatter.StripTags(Model.MetaDescription)) + "\" />");
+        NopHtml.AddHeadCustomParts("<meta property=\"og:image\" content=\"" + Model.DefaultPictureModel.ImageUrl + "\" />");
+        NopHtml.AddHeadCustomParts("<meta property=\"og:image:url\" content=\"" + Model.DefaultPictureModel.ImageUrl + "\" />");
+        NopHtml.AddHeadCustomParts("<meta property=\"og:url\" content=\"" + webHelper.GetThisPageUrl(false) + "\" />");
+        NopHtml.AddHeadCustomParts("<meta property=\"og:site_name\" content=\"" + Html.Encode(Model.CurrentStoreName) + "\" />");
+    }
+
+    //Twitter META tags
+    if (seoSettings.TwitterMetaTags)
+    {
+        NopHtml.AddHeadCustomParts("<meta property=\"twitter:card\" content=\"summary\" />");
+        NopHtml.AddHeadCustomParts("<meta property=\"twitter:site\" content=\"" + Html.Encode(Model.CurrentStoreName) + "\" />");
+        NopHtml.AddHeadCustomParts("<meta property=\"twitter:title\" content=\"" + Html.Encode(Model.Name) + "\" />");
+        NopHtml.AddHeadCustomParts("<meta property=\"twitter:description\" content=\"" + Html.Encode(htmlFormatter.StripTags(Model.MetaDescription)) + "\" />");
+        NopHtml.AddHeadCustomParts("<meta property=\"twitter:image\" content=\"" + Model.DefaultPictureModel.ImageUrl + "\" />");
+        NopHtml.AddHeadCustomParts("<meta property=\"twitter:url\" content=\"" + webHelper.GetThisPageUrl(false) + "\" />");
+    }
+
+    NopHtml.AddJsonLdParts(Model.JsonLd);
+
+    // ===== VARIANTS DROPDOWN LOGIC =====
+    // Determine the first available variant to pre-select
+    var firstAvailableVariant = Model.AssociatedProducts
+        ?.FirstOrDefault(v => !string.IsNullOrEmpty(v.StockAvailability)
+                              && !v.StockAvailability.ToLower().Contains("out of stock"));
+
+    // If nothing is available, take the first variant (if any)
+    if (firstAvailableVariant == null && (Model.AssociatedProducts?.Any() ?? false))
+    {
+        firstAvailableVariant = Model.AssociatedProducts.FirstOrDefault();
+    }
+}
+<!--product breadcrumb-->
+@section Breadcrumb
+    {
+    @await Html.PartialAsync("_ProductBreadcrumb", Model.Breadcrumb)
+}
+@await Component.InvokeAsync(typeof(WidgetViewComponent), new { widgetZone = PublicWidgetZones.ProductDetailsAfterBreadcrumb, additionalData = Model })
+<div class="page product-details-page">
+    <div class="page-body">
+        @await Component.InvokeAsync(typeof(WidgetViewComponent), new { widgetZone = PublicWidgetZones.ProductDetailsTop, additionalData = Model })
+        <form asp-route="Product" asp-route-sename="@Model.SeName" method="post" id="product-details-form">
+            <article data-productid="@Model.Id">
+                <div class="product-essential">
+                    @await Component.InvokeAsync(typeof(WidgetViewComponent), new { widgetZone = PublicWidgetZones.ProductDetailsEssentialTop, additionalData = Model })
+                    <div class="gallery">
+                        <!--product pictures-->
+                        @await Html.PartialAsync("_ProductDetailsPictures", Model)
+                        <!--product videos-->
+                        @await Html.PartialAsync("_ProductDetailsVideos", Model)
+                    </div>
+                    <div class="overview">
+                        @await Html.PartialAsync("_Discontinued", Model)
+                        <div class="product-name">
+                            <h1>
+                                @Model.Name
+                            </h1>
+                        </div>
+                        @if (!string.IsNullOrEmpty(Model.ShortDescription))
+                        {
+                            <div class="short-description">
+                                @Html.Raw(Model.ShortDescription)
+                            </div>
+                        }
+                        @await Component.InvokeAsync(typeof(WidgetViewComponent), new { widgetZone = PublicWidgetZones.ProductDetailsOverviewTop, additionalData = Model })
+                        <!--product reviews-->
+                        @await Html.PartialAsync("_ProductReviewOverview", Model.ProductReviewOverview)
+                        <!--product manufacturers-->
+                        @await Html.PartialAsync("_ProductManufacturers", Model.ProductManufacturers)
+                        @* ===================================================================
+                           VARIANTS DROPDOWN SYSTEM (Custom UI for variant selection)
+                           ================================================================ *@
+                        <div class="product-variant-dropdown-wrapper">
+                            @* Header: Variant count *@
+                            <h2 class="variants-header">
+                                @if (Model.AssociatedProducts?.Any() ?? false)
+                                {
+                                    <text>Artikel wählen (@Model.AssociatedProducts.Count Varianten verfügbar)</text>
+                                }
+                                else
+                                {
+                                    <text>Keine Varianten verfügbar</text>
+                                }
+                            </h2>
+
+                            @if (Model.AssociatedProducts != null && Model.AssociatedProducts.Any())
+                            {
+                                @* Dropdown Container *@
+                                <div class="variant-dropdown-container">
+                                    @* Toggle Button with selected variant details *@
+                                    <button type="button" class="variant-dropdown-toggle" aria-haspopup="true" aria-expanded="false">
+                                        @if (firstAvailableVariant != null)
+                                        {
+                                            <div class="button-content">
+                                                <div class="button-left">
+                                                    <div class="variant-name"><strong>@firstAvailableVariant.Name</strong></div>
+                                                    <div class="variant-availability">
+                                                        @if (firstAvailableVariant.InStock)
+                                                        {
+                                                            <span class="in-stock">@firstAvailableVariant.StockAvailability</span>
+                                                        }
+                                                        else
+                                                        {
+                                                            <span class="out-of-stock">@firstAvailableVariant.StockAvailability</span>
+                                                        }
+                                                    </div>
+                                                </div>
+                                                <div class="button-right">
+                                                    @{
+                                                        var dataDictPrice = new ViewDataDictionary(ViewData);
+                                                        dataDictPrice.TemplateInfo.HtmlFieldPrefix = $"price_{firstAvailableVariant.Id}";
+                                                    }
+                                                    @await Html.PartialAsync("_ProductPrice", firstAvailableVariant.ProductPrice, dataDictPrice)
+                                                </div>
+                                                <div class="button-arrow-row">
+                                                    <span class="arrow-icon">▼</span>
+                                                </div>
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <text>Keine Variante ausgewählt</text>
+                                        }
+                                    </button>
+
+                                    @* Variants Modal *@
+                                    <div class="variant-modal" id="variantModal">
+                                        <div class="variant-modal-content">
+                                            <div class="modal-header">
+                                                <span class="close-button">&times;</span>
+                                            </div>
+                                            <div class="modal-content-area">
+                                                <ul class="variant-list" aria-label="Variante auswählen">
+                                                    @foreach (var variant in Model.AssociatedProducts)
+                                                    {
+                                                        // Check availability
+                                                        bool isAvailable = variant.InStock;
+
+                                                        string variantItemClass = "variant-item";
+                                                        if (!isAvailable)
+                                                            variantItemClass += " variant-disabled";
+
+                                                        // Mark first available variant as selected
+                                                        if (variant == firstAvailableVariant)
+                                                            variantItemClass += " variant-selected";
+
+                                                        // Attribute text (if any)
+                                                        string attributesText = "";
+                                                        if (variant.ProductAttributes != null && variant.ProductAttributes.Any())
+                                                        {
+                                                            attributesText = string.Join(", ",
+                                                                variant.ProductAttributes.Select(a => a.Name + ": " + a.TextPrompt));
+                                                        }
+
+                                                        <li class="@variantItemClass"
+                                                            data-variantid="@variant.Id"
+                                                            data-variantname="@variant.Name"
+                                                            data-instock="@(variant.InStock ? "true" : "false")"
+                                                            data-stockavailability="@variant.StockAvailability"
+                                                            title="@variant.Name">
+
+                                                            <div class="button-content">
+                                                                <div class="button-left">
+                                                                    <div class="variant-name"><strong>@variant.Name</strong></div>
+                                                                    <div class="variant-availability">
+                                                                        @if (isAvailable)
+                                                                        {
+                                                                            <span class="in-stock">@variant.StockAvailability</span>
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            <span class="out-of-stock">@variant.StockAvailability</span>
+                                                                        }
+                                                                    </div>
+                                                                </div>
+                                                                <div class="button-right">
+                                                                    @{
+                                                                        var dataDictPriceItem = new ViewDataDictionary(ViewData);
+                                                                        dataDictPriceItem.TemplateInfo.HtmlFieldPrefix = $"price_{variant.Id}";
+                                                                    }
+                                                                    @await Html.PartialAsync("_ProductPrice", variant.ProductPrice, dataDictPriceItem)
+                                                                </div>
+                                                            </div>
+
+                                                            @* Attributes (if any) *@
+                                                            @if (!string.IsNullOrEmpty(attributesText))
+                                                            {
+                                                                <div class="variant-attributes">
+                                                                    <small>Attribute: @attributesText</small>
+                                                                </div>
+                                                            }
+
+                                                            @* Hidden price block for JavaScript to update button *@
+                                                            <div id="price-html-@variant.Id" style="display: none;">
+                                                                @{
+                                                                    var dataDictPriceHidden = new ViewDataDictionary(ViewData);
+                                                                    dataDictPriceHidden.TemplateInfo.HtmlFieldPrefix = $"price_{variant.Id}";
+                                                                }
+                                                                @await Html.PartialAsync("_ProductPrice", variant.ProductPrice, dataDictPriceHidden)
+                                                            </div>
+                                                        </li>
+                                                    }
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                @* AddToCart Section (one block per variant, switched by JavaScript) *@
+                                <div class="variant-addtocart-section">
+                                    @foreach (var variant in Model.AssociatedProducts)
+                                    {
+                                        var dataDict = new ViewDataDictionary(ViewData);
+                                        dataDict.TemplateInfo.HtmlFieldPrefix = $"addtocart_{variant.Id}";
+
+                                        <div id="addtocart-block-@variant.Id"
+                                             class="addtocart-block"
+                                             style="display:@((variant == firstAvailableVariant) ? "block" : "none")">
+                                            @await Html.PartialAsync("_AddToCart", variant.AddToCart, dataDict)
+                                        </div>
+                                    }
+                                </div>
+
+                                @* ===================================================================
+                                   ACTION BUTTONS (Wishlist, Compare, Email)
+                                   - Wishlist is variant-specific (shown for first available variant)
+                                   - Compare and Email are product-level (apply to main grouped product)
+                                   ================================================================ *@
+                                <div class="overview-buttons">
+                                    @* Wishlist button for first available variant *@
+                                    @if (firstAvailableVariant != null)
+                                    {
+                                        @foreach (var variant in Model.AssociatedProducts)
+                                        {
+                                            var dataDictAddToWishlist = new ViewDataDictionary(ViewData);
+                                            dataDictAddToWishlist.TemplateInfo.HtmlFieldPrefix = $"addtocart_{variant.Id}";
+
+                                            <div id="wishlist-block-@variant.Id"
+                                                 class="wishlist-block"
+                                                 style="display:@((variant == firstAvailableVariant) ? "contents" : "none")">
+                                                @await Html.PartialAsync("_AddToWishlist", variant.AddToCart, dataDictAddToWishlist)
+                                            </div>
+                                        }
+                                    }
+                                    @* Compare and Email buttons (product-level) *@
+                                    @await Component.InvokeAsync(typeof(WidgetViewComponent), new { widgetZone = PublicWidgetZones.ProductDetailsInsideOverviewButtonsBefore, additionalData = Model })
+                                    @await Html.PartialAsync("_CompareProductsButton", Model)
+                                    @await Html.PartialAsync("_ProductEmailAFriendButton", Model)
+                                    @await Component.InvokeAsync(typeof(WidgetViewComponent), new { widgetZone = PublicWidgetZones.ProductDetailsInsideOverviewButtonsAfter, additionalData = Model })
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="no-associated-products">
+                                    @T("Products.NoAssociatedProducts")
+                                </div>
+                            }
+                        </div>
+                        @* ===== END VARIANTS DROPDOWN SYSTEM ===== *@
+                        @await Html.PartialAsync("_ShareButton", Model)
+                        @await Component.InvokeAsync(typeof(WidgetViewComponent), new { widgetZone = PublicWidgetZones.ProductDetailsOverviewBottom, additionalData = Model })
+                    </div>
+                    @if (!string.IsNullOrEmpty(Model.FullDescription))
+                    {
+                        <div class="full-description">
+                            @Html.Raw(Model.FullDescription)
+                        </div>
+                    }
+                    @await Component.InvokeAsync(typeof(WidgetViewComponent), new { widgetZone = PublicWidgetZones.ProductDetailsEssentialBottom, additionalData = Model })
+                </div>
+                @await Component.InvokeAsync(typeof(WidgetViewComponent), new { widgetZone = PublicWidgetZones.ProductDetailsBeforeCollateral, additionalData = Model })
+                <section class="product-collateral">
+                    @await Html.PartialAsync("_ProductSpecifications", Model.ProductSpecificationModel)
+                    @await Html.PartialAsync("_ProductTags", Model.ProductTags)
+                </section>
+                @*we do not display "also purchased" for grouped products
+                    @await Component.InvokeAsync(typeof(ProductsAlsoPurchasedViewComponent), new { productId = Model.Id })*@
+                @await Component.InvokeAsync(typeof(RelatedProductsViewComponent), new { productId = Model.Id })
+                @await Component.InvokeAsync(typeof(CompatibleWithFilterLevelValuesViewComponent), new { productId = Model.Id })
+            </article>
+        </form>
+        <!--product reviews-->
+        @if (Model.ProductReviewOverview.AllowCustomerReviews)
+        {
+            @await Html.PartialAsync("_ProductReviews", Model.ProductReviews)
+        }
+        @await Component.InvokeAsync(typeof(WidgetViewComponent), new { widgetZone = PublicWidgetZones.ProductDetailsBottom, additionalData = Model })
+    </div>
+</div>
