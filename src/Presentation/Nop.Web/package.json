@@ -9,6 +9,11 @@
     "gulp-filter": "^7.0.0",
     "gulp-rename": "^1.4.0",
     "gulp-zip": "^5.0.2",
+    "gulp-sass": "^5.1.0",
+    "sass": "^1.77.0",
+    "gulp-sourcemaps": "^3.0.0",
+    "gulp-postcss": "^9.0.1",
+    "autoprefixer": "^10.4.20",
     "merge2": "^1.4.1"
   },
   "dependencies": {
