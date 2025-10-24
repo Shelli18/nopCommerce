@@ -205,3 +205,12 @@ src/Presentation/Nop.Web/wwwroot/sitemaps/*
 !src/Presentation/Nop.Web/wwwroot/sitemaps/Index.htm
 src/packages/*
 src/Tests/Nop.Tests/Connections.resx
+# Claude AI files
+.claude/
+
+# Temporary files
+nul
+**/nul
+
+# App_Data NPM files (not needed in repo)
+src/Presentation/Nop.Web/App_Data/package*.json
