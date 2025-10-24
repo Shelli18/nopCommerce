@@ -1,0 +1,33 @@
+﻿@model ProductDetailsModel
+<style>
+.delivery-date:before{
+
+color: white!important;
+}
+</style>
+@if (Model.FreeShippingNotificationEnabled && Model.IsFreeShipping || !string.IsNullOrWhiteSpace(Model.DeliveryDate))
+{
+    <div class="delivery">
+        <script asp-location="Footer">
+            $(document).on("product_attributes_changed", function (data) {
+                if (data.changedData.isFreeShipping) {
+                    $("#free-shipping-"+data.changedData.productId).removeClass("invisible");
+                } else {
+                    $("#free-shipping-"+data.changedData.productId).addClass("invisible");
+                }
+            });
+        </script>
+         <!-- <label>@T("SevenSpikes.Themes.Pacific.Common.Shipping")</label>-->
+        @if (Model.FreeShippingNotificationEnabled && Model.IsFreeShipping)
+        {
+            <div id="free-shipping-@Model.Id" class="free-shipping">@T("Products.FreeShipping")</div>
+        }
+        @if (!string.IsNullOrWhiteSpace(Model.DeliveryDate))
+        {
+            <div class="delivery-date">
+              <span class="label">@T("Products.DeliveryDate") @Model.DeliveryDate</span>
+     
+            </div>
+        }
+    </div>
+}

@@ -1,0 +1,890 @@
+﻿@model ProductDetailsModel
+
+@using Nop.Core
+@using Nop.Core.Domain.Seo;
+@using Nop.Services.Configuration
+
+@inject Nop.Core.IWebHelper webHelper
+@inject Nop.Services.Html.IHtmlFormatter htmlFormatter
+@inject SeoSettings seoSettings
+@inject ISettingService settingService
+@inject IStoreContext storeContext
+
+<style>
+    .info-variant-list {
+        margin-bottom: 15px;
+    }
+
+
+    .row-article-info {
+        display: flex;
+        justify-content: flex start;
+        gap: 10px 90px;
+    }
+
+    .col-article-info {
+        flex-direction: column;
+        flex-flow: column wrap;
+        justify-content: flex start;
+    }
+
+
+.variant-name{
+    font-size:10px;
+}
+
+
+
+    .product-page-layout-one .equalizer-box {
+        display: contents;
+    }
+
+    .stickycontainer:after {
+        content: "";
+    display: block;
+    clear: both;
+    
+    }
+    .stickyEnd{
+          display: flex;
+          width:100%;
+          position: relative;
+        justify-content: space-around;
+    }
+
+  
+ /* Überschrift */
+    .variants-header {
+        font-size: 1.25rem;
+        font-weight: bold;
+        margin-bottom: 1rem;
+    }
+
+    /* Liste der Varianten */
+    .variant-list-wrapper {
+        margin-bottom: 25px;
+    }
+    .variant-list {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+        max-width: 500px; /* optional */
+    }
+    .variant-item {
+         padding: 2px 4px;
+        border: 1px solid #ddd;
+        padding: 10px;
+        margin-bottom: 12px;
+        cursor: pointer;
+        background-color: #fff;
+        transition: background-color 0.3s;
+    }
+    .variant-item:hover {
+        background-color: #f8f8f8;
+    }
+    .variant-disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+    /* Markierte Variante */
+    .variant-selected {
+        border-color: #0088cc;
+        background-color: #eef7ff;
+    }
+
+    /* Abschnitt für AddToCart-Formulare (eine pro Variante) */
+    .variant-addtocart-section {
+        margin-top: 25px;
+    }
+    .addtocart-block {
+        margin-bottom: 10px;
+    }
+
+</style>
+@{
+    Layout = "_ColumnsOne";
+
+    //title
+    NopHtml.AddTitleParts(!string.IsNullOrEmpty(Model.MetaTitle) ? Model.MetaTitle : Model.Name);
+    //meta
+    NopHtml.AddMetaDescriptionParts(Model.MetaDescription);
+    NopHtml.AddMetaKeywordParts(Model.MetaKeywords);
+    //page class
+    NopHtml.AppendPageCssClassParts("html-product-details-page");
+
+    //canonical URL
+    if (seoSettings.CanonicalUrlsEnabled)
+    {
+        var productUrl = Url.RouteUrl("Product", new { SeName = Model.SeName }, webHelper.GetCurrentRequestProtocol()).ToLowerInvariant();
+        NopHtml.AddCanonicalUrlParts(productUrl, seoSettings.QueryStringInCanonicalUrlsEnabled);
+    }
+
+    //open graph META tags
+    if (seoSettings.OpenGraphMetaTags)
+    {
+        NopHtml.AddHeadCustomParts("<meta property=\"og:type\" content=\"product\" />");
+        NopHtml.AddHeadCustomParts("<meta property=\"og:title\" content=\"" + Html.Encode(Model.Name) + "\" />");
+        NopHtml.AddHeadCustomParts("<meta property=\"og:description\" content=\"" + Html.Encode(htmlFormatter.StripTags(Model.MetaDescription)) + "\" />");
+        NopHtml.AddHeadCustomParts("<meta property=\"og:image\" content=\"" + Model.DefaultPictureModel.ImageUrl + "\" />");
+        NopHtml.AddHeadCustomParts("<meta property=\"og:image:url\" content=\"" + Model.DefaultPictureModel.ImageUrl + "\" />");
+        NopHtml.AddHeadCustomParts("<meta property=\"og:url\" content=\"" + webHelper.GetThisPageUrl(false) + "\" />");
+        NopHtml.AddHeadCustomParts("<meta property=\"og:site_name\" content=\"" + Html.Encode(Model.CurrentStoreName) + "\" />");
+    }
+
+    //Twitter META tags
+    if (seoSettings.TwitterMetaTags)
+    {
+        NopHtml.AddHeadCustomParts("<meta property=\"twitter:card\" content=\"summary\" />");
+        NopHtml.AddHeadCustomParts("<meta property=\"twitter:site\" content=\"" + Html.Encode(Model.CurrentStoreName) + "\" />");
+        NopHtml.AddHeadCustomParts("<meta property=\"twitter:title\" content=\"" + Html.Encode(Model.Name) + "\" />");
+        NopHtml.AddHeadCustomParts("<meta property=\"twitter:description\" content=\"" + Html.Encode(htmlFormatter.StripTags(Model.MetaDescription)) + "\" />");
+        NopHtml.AddHeadCustomParts("<meta property=\"twitter:image\" content=\"" + Model.DefaultPictureModel.ImageUrl + "\" />");
+        NopHtml.AddHeadCustomParts("<meta property=\"twitter:url\" content=\"" + webHelper.GetThisPageUrl(false) + "\" />");
+    }
+
+    var storeId = (await storeContext.GetCurrentStoreAsync()).Id;
+
+    var productPageLayout = await settingService.GetSettingByKeyAsync("pacificthemesettings.productpagelayout", "one", storeId, true);
+    var productPageLayoutClass = "product-page-layout-" + productPageLayout;
+    var isProductPageLayoutOne = string.Compare(productPageLayout, "one", StringComparison.InvariantCultureIgnoreCase) == 0;
+
+    //current category ID
+    var currentCategoryId = 0;
+    if (Url.ActionContext.RouteData.Values["controller"].ToString().Equals("catalog", StringComparison.InvariantCultureIgnoreCase) &&
+        Url.ActionContext.RouteData.Values["action"].ToString().Equals("category", StringComparison.InvariantCultureIgnoreCase))
+    {
+        currentCategoryId = Convert.ToInt32(Url.ActionContext.RouteData.Values["categoryId"].ToString());
+    }
+
+    //current product ID
+    var currentProductId = 0;
+    if (Url.ActionContext.RouteData.Values["controller"].ToString().Equals("product", StringComparison.InvariantCultureIgnoreCase) &&
+        Url.ActionContext.RouteData.Values["action"].ToString().Equals("productdetails", StringComparison.InvariantCultureIgnoreCase))
+    {
+        currentProductId = Convert.ToInt32(Url.ActionContext.RouteData.Values["productId"].ToString());
+    }
+
+    /*category navigation*/
+    var categoryNavigation = await Component.InvokeAsync("CategoryNavigation", new { currentCategoryId = currentCategoryId, currentProductId = currentProductId });
+
+    // 1) Standard-Variante ermitteln
+    var firstAvailableVariant = Model.AssociatedProducts
+        ?.FirstOrDefault(v => !string.IsNullOrEmpty(v.StockAvailability)
+                              && !v.StockAvailability.ToLower().Contains("out of stock"));
+
+    // Falls gar nichts verfügbar, nimm die erste Variante (wenn vorhanden)
+    if (firstAvailableVariant == null && (Model.AssociatedProducts?.Any() ?? false))
+    {
+        firstAvailableVariant = Model.AssociatedProducts.FirstOrDefault();
+    }
+
+    // 2) ID für das JavaScript
+    var defaultVariantId = firstAvailableVariant?.Id ?? 0;
+}
+
+
+
+<div class="page product-details-page product-details-grouped-page @productPageLayoutClass">
+    <div class="page-body">
+        @await Component.InvokeAsync("Widget", new { widgetZone = PublicWidgetZones.ProductDetailsTop, additionalData = Model })
+        <div class="product-details-top">
+            @await Html.PartialAsync("_ProductBreadcrumb", Model.Breadcrumb)
+            @await Component.InvokeAsync("Widget", new { widgetZone = PublicWidgetZones.ProductDetailsAfterBreadcrumb, additionalData = Model })
+        </div>
+        <form asp-route="Product" asp-route-sename="@Model.SeName" method="post" id="product-details-form">
+            @if (seoSettings.MicrodataEnabled)
+            {
+                @await Html.PartialAsync("_Microdata", Model)
+            }
+            <div class="product-content-wrapper" data-productid="@Model.Id">
+                <div class="product-essential">
+                    @await Component.InvokeAsync("Widget", new { widgetZone = PublicWidgetZones.ProductDetailsEssentialTop, additionalData = Model })
+                    <div class="stickycontainer">
+
+                        <!--  STICKY IMAGE -->
+                        <div class="sticky">
+                            <div class=" gallery-wrapper @if (isProductPageLayoutOne) {<text>equalize</text>}">
+                                @{
+                                    var cloudZoom = await Component.InvokeAsync("Widget", new { widgetZone = "sevenspikes_cloud_zoom", additionalData = Model });
+                                }
+                                @if (!String.IsNullOrEmpty(await cloudZoom.RenderHtmlContentAsync()))
+                                {
+                                    @cloudZoom
+                                }
+                                else
+                                {
+                                    <!--product pictures-->
+                                    @await Html.PartialAsync("_ProductDetailsPictures", Model)
+                                }
+                                @await Html.PartialAsync("_ShareButton", Model)
+                            </div>
+                        </div>
+                        <div class="productdata">
+                        <div class="equalizer-box">
+
+                            <div class="overview-wrapper @if (isProductPageLayoutOne) {<text>equalize</text>}">
+                                <div class="overview">
+                                    @await Component.InvokeAsync("Widget", new { widgetZone = PublicWidgetZones.ProductDetailsOverviewTop, additionalData = Model })
+                                    @await Html.PartialAsync("_Discontinued", Model)
+                                    <div class="product-name">
+                                        <h1>
+                                            @Model.Name
+                                        </h1>
+                                    </div>
+                                    <!--product reviews-->
+                                    @await Html.PartialAsync("_ProductReviewOverview", Model.ProductReviewOverview)
+                                    @{
+                                        var productManufacturers = await Html.PartialAsync("_ProductManufacturers", Model.ProductManufacturers);
+                                    }
+                                    @if (!string.IsNullOrEmpty(Model.ShortDescription))
+                                    {
+                                        <div class="short-description">
+                                            @Html.Raw(Model.ShortDescription)
+                                        </div>
+                                    }
+									@if (Model.Id != null)
+                                    {
+                                     <div class="short-description">
+                                       <cu-asset-box id="@Model.Id"></cu-asset-box>
+                                    </div>
+                                    }
+                                    @if (!String.IsNullOrEmpty(await productManufacturers.RenderHtmlContentAsync()))
+                                    {
+                                        <div class="overview-info-wrapper">
+                                            @productManufacturers
+                                        </div>
+                                    }
+                                      <div style="display: row;">
+                                                            @await Html.PartialAsync("_Availability", Model.AssociatedProducts.FirstOrDefault())
+
+                                                            <!--delivery-->
+                                                            @if ( Model.AssociatedProducts.FirstOrDefault().DisplayBackInStockSubscription)
+                                                            {
+                                                                 @await Html.PartialAsync("_BackInStockSubscription",  Model.AssociatedProducts.FirstOrDefault())
+                                                              
+                                                            }else{
+                                                                  @await Html.PartialAsync("_DeliveryInfoParentVariant", Model.AssociatedProducts.FirstOrDefault())
+                                                            }
+                                                        </div>
+                                    <div class="info-variant-list">
+
+                                        <!--associated products-->
+
+
+
+@* -----------------------------
+   Überschrift: Anzahl Varianten
+   ----------------------------- *@
+<h2 class="variants-header">
+    @if (Model.AssociatedProducts?.Any() ?? false)
+    {
+      <text>Artikel wählen (@(Model.AssociatedProducts.Count + " Varianten verfügbar)")</text>
+    }
+    else
+    {
+        <text>Keine Varianten verfügbar</text>
+    }
+</h2>
+
+@if (Model.AssociatedProducts != null && Model.AssociatedProducts.Any())
+{
+   @*
+        2) Variantenauswahl als benutzerdefinierte "Dropdown"-Liste 
+           (UL/LI + Klick) 
+    *@
+    <div class="variant-dropdown-container">
+        <!-- Toggle-Button mit ausgewählten Variantendetails -->
+<button type="button" class="variant-dropdown-toggle" aria-haspopup="true" aria-expanded="false">
+    @if (firstAvailableVariant != null)
+    {
+        <div class="button-content">
+            <div class="button-left">
+                <div class="variant-name"><strong>@firstAvailableVariant.Name</strong></div>
+                <div class="variant-availability">
+                    @if (@firstAvailableVariant.InStock)
+                    {
+                        <span class="in-stock">@firstAvailableVariant.StockAvailability</span>
+                    }
+                    else
+                    {
+                        <span class="out-of-stock">@firstAvailableVariant.StockAvailability</span>
+                    }
+                </div>
+            </div>
+            <div class="button-right">
+                @{
+                    var dataDictPrice = new ViewDataDictionary(ViewData);
+                    dataDictPrice.TemplateInfo.HtmlFieldPrefix = $"price_{firstAvailableVariant.Id}";
+                }
+                @await Html.PartialAsync("_ProductPriceVariants", firstAvailableVariant.ProductPrice, dataDictPrice)
+            </div>
+  
+         <div class="button-arrow-row">
+        <span class="arrow-icon">▼</span> 
+        @* Alternativ: <i class="fa fa-chevron-down"></i> oder ein SVG *@
+    </div>
+    </div>
+   
+    }
+    else
+    {
+        <text>Keine Variante ausgewählt</text>
+    }
+</button>
+
+        <!-- Varianten Modal -->
+        <div class="variant-modal" id="variantModal">
+            <div class="variant-modal-content">
+                <div class="modal-header">
+                    <span class="close-button">&times;</span>
+                 </div>
+                  <div class="modal-content-area">
+                <ul class="variant-list" aria-label="Variante auswählen">
+                    @foreach (var variant in Model.AssociatedProducts)
+                    {
+                        // Verfügbarkeit
+                        bool isAvailable = @variant.InStock;
+
+                        string variantItemClass = "variant-item";
+                        if (!isAvailable)
+                            variantItemClass += " variant-disabled";
+
+                        // Wenn es die "firstAvailableVariant" ist, markieren wir sie gleich als ausgewählt
+                        if (variant == firstAvailableVariant)
+                            variantItemClass += " variant-selected";
+
+                        // Preise (Strings)
+                        string regularPrice = variant.ProductPrice?.Price;
+                        string discountedPrice = variant.ProductPrice?.PriceWithDiscount;
+                        bool hasDiscount = !string.IsNullOrEmpty(discountedPrice) 
+                                           && discountedPrice != regularPrice;
+
+                        // Attribute
+                        string attributesText = "";
+                        if (variant.ProductAttributes != null && variant.ProductAttributes.Any())
+                        {
+                            attributesText = string.Join(", ",
+                                variant.ProductAttributes.Select(a => a.Name + ": " + a.TextPrompt));
+                        }
+
+                        <li class="@variantItemClass"
+                            data-variantid="@variant.Id"
+                            data-variantname="@variant.Name"
+                            data-variantprice="@regularPrice"
+                            data-variantdiscount="@discountedPrice"
+                            data-instock="@variant.InStock"
+                            title="@variant.Name">
+                            
+                           <div class="button-content">
+                <div class="button-left">
+                    <div class="variant-name"><strong>@variant.Name</strong></div>
+                    <div class="variant-availability">
+                        @if (isAvailable)
+                        {
+                            <span class="in-stock">Auf Lager</span>
+                        }
+                        else
+                        {
+                            <span class="out-of-stock">Nicht verfügbar</span>
+                        }
+                    </div>
+                </div>
+                <div class="button-right">
+                    @{
+                        var dataDictPrice = new ViewDataDictionary(ViewData);
+                        dataDictPrice.TemplateInfo.HtmlFieldPrefix = $"price_{variant.Id}";
+                    }
+                    @await Html.PartialAsync("_ProductPriceVariants", variant.ProductPrice, dataDictPrice)
+                </div>
+            </div>
+                            <!-- Attribute (falls vorhanden) -->
+                            @if (!string.IsNullOrEmpty(attributesText))
+                            {
+                                <div class="variant-attributes">
+                                    <small>Attribute: @attributesText</small>
+                                </div>
+                            }
+                             <!-- Versteckter Preis-Block für JavaScript -->
+            <div id="price-html-@variant.Id" style="display: none;">
+                @{
+                    var dataDictPriceHidden = new ViewDataDictionary(ViewData);
+                    dataDictPriceHidden.TemplateInfo.HtmlFieldPrefix = $"price_{variant.Id}";
+                }
+                @await Html.PartialAsync("_ProductPriceVariants", variant.ProductPrice, dataDictPriceHidden)
+            </div>
+                        </li>
+                    }
+                </ul>
+            </div>
+        </div>
+    </div>
+ </div>
+    <!-- Varianten AddToCart-Section -->
+    <div class="variant-addtocart-section">
+        @foreach (var variant in Model.AssociatedProducts)
+        {
+            // Prefix definieren für das Partial
+            var dataDict = new ViewDataDictionary(ViewData);
+            dataDict.TemplateInfo.HtmlFieldPrefix = $"addtocart_{variant.Id}";
+                   
+            <div id="addtocart-block-@variant.Id"
+                 class="addtocart-block"
+                 style="display:@((variant == firstAvailableVariant) ? "block" : "none")">
+                 @await Html.PartialAsync("_ProductBonusOutput", (!string.IsNullOrWhiteSpace(variant.ProductPrice.PriceWithDiscount) == false ? variant.ProductPrice.Price : variant.ProductPrice.PriceWithDiscount,!string.IsNullOrWhiteSpace(variant.ProductPrice.PriceWithDiscount) == true ? variant.ProductPrice.Price : !string.IsNullOrWhiteSpace(variant.ProductPrice.OldPrice) == true ? variant.ProductPrice.OldPrice : "0",true))  
+         
+                @await Html.PartialAsync("_AddToCart", variant.AddToCart, dataDict)
+            </div>
+        }
+    </div>
+}
+else
+{
+    <div class="no-associated-products">
+        @T("Products.NoAssociatedProducts")
+    </div>
+}
+
+
+
+
+                                    
+                                        <!--  ENDE AUSWAHL PRODUKTE -->
+                                    </div>
+                                    <!--compare, email a friend-->
+                                    @await Component.InvokeAsync("Widget", new { widgetZone = PublicWidgetZones.ProductDetailsOverviewBottom, additionalData = Model })
+                                   
+                                      <div class="overview-buttons-wrapper">
+                                            <div class="overview-buttons">
+
+                                                @await Component.InvokeAsync("Widget", new { widgetZone = PublicWidgetZones.ProductDetailsInsideOverviewButtonsBefore, additionalData = Model })
+                                                @await Html.PartialAsync("_CompareProductsButton", Model)
+                                                @await Html.PartialAsync("_ProductEmailAFriendButton", Model)
+                                                @await Component.InvokeAsync("Widget", new { widgetZone = PublicWidgetZones.ProductDetailsInsideOverviewButtonsAfter, additionalData = Model })
+                                            </div>
+                                        </div>
+                                </div>
+
+
+                            
+                            </div>
+                        </div>
+</div>
+                    </div>
+                    
+                    <div style="margin-bottom: 50px;"> <cu-content-box cdn-url="https://cdn.bob-mag.de" folder="shop/products" slider-type="product" slider-id="@Model.Id" ></cu-content-box></div>
+                    @if (isProductPageLayoutOne)
+                    {
+
+                        <div id="productcollateral" class="product-collateral">
+                            @if (!string.IsNullOrEmpty(Model.FullDescription))
+                            {
+                                <div class="full-description" itemprop="description">
+                                    @Html.Raw(Model.FullDescription)
+                                </div>
+                            }
+
+                            @await Html.PartialAsync("_ProductSpecifications", Model.ProductSpecificationModel)
+                            @await Html.PartialAsync("_ProductTags", Model.ProductTags)
+                        </div>
+                        <!--     Produktdetails Tabs -->
+                        @await Component.InvokeAsync("Widget", new { widgetZone = PublicWidgetZones.ProductDetailsBeforeCollateral, additionalData = Model })
+                        @await Component.InvokeAsync("Widget", new { widgetZone = "productdetails_after_collateral", additionalData = Model.Id })
+                    }
+                </div>
+                <div class="product-page-grids @if (isProductPageLayoutOne) {<text>side-grids</text>}">
+                    @*we do not display "also purchased" for grouped products
+                        @await Component.InvokeAsync("ProductsAlsoPurchased", new { productId = Model.Id })*@
+                    @await Component.InvokeAsync("RelatedProducts", new { productId = Model.Id })
+                    @if (isProductPageLayoutOne)
+                    {
+                        if (!string.IsNullOrEmpty(await categoryNavigation.RenderHtmlContentAsync()))
+                        {
+                            <div class="block block-category-navigation">
+                                <div class="title">
+                                    <strong>@T("Categories")</strong>
+                                </div>
+                                @categoryNavigation
+                            </div>
+                        }
+                    }
+                </div>
+
+
+
+            </div>
+        </form>
+        @await Component.InvokeAsync("Widget", new { widgetZone = PublicWidgetZones.ProductDetailsBottom, additionalData = Model })
+    </div>
+</div>
+
+@* 
+    4) JavaScript: 
+       - Per Default blenden wir *nur* den AddToCart-Block der "defaultVariant" ein.
+       - Bei Klick auf eine Variante (li.variant-item) zeigen wir den passenden AddToCart-Block.
+       - Nicht verfügbare Varianten (variant-disabled) reagieren nicht auf Klick.
+       - Wenn defaultVariant null ist (unwahrscheinlich bei Count>0), machen wir nichts.
+*@
+@* Varianten Modal CSS - vollständiger Code *@
+<style>
+.variants-header {
+    font-size: 1.25rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+    cursor: pointer; /* Neu: Macht die Überschrift klickbar */
+}
+
+.variants-header:hover {
+    color: rgba(239, 108, 0, 0.8); /* Neu: Hover-Effekt */
+}
+
+.variant-dropdown-container {
+    position: relative;
+    max-width: 500px;
+    margin-bottom: 20px;
+}
+
+.variant-dropdown-toggle {
+    background-color: #f9f9f9;
+    color: #333;
+    padding: 12px 16px;
+    cursor: pointer;
+    border: 1px solid #ccc;
+    border-radius: 18px;
+    width: 100%;
+    text-align: left;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.button-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: start;
+    width: 100%;
+}
+
+.button-left {
+    display: flex;
+    flex-direction: column;
+    width: 40%; /* Reduziert die Breite des linken Bereichs auf 40% */
+    flex-shrink: 1; /* Erlaubt dem Element, bei Bedarf zu schrumpfen */
+}
+
+.button-right {
+    display: flex;
+    align-items: center;
+    width: 55%; /* Erhöht die Breite des rechten Bereichs auf 55% */
+    justify-content: flex-end; /* Ausrichtung des Inhalts nach rechts */
+}
+
+.variant-dropdown-toggle:hover {
+    background-color: rgb(241, 241, 241);
+}
+
+.selected-variant {
+    display: flex;
+    flex-direction: column;
+}
+
+.variant-name {
+    font-weight: bold;
+    font-size: 16px;
+    margin-bottom: 5px;
+}
+
+.variant-dropdown-toggle {
+    display: inline-block;    /* statt flex */
+    width: 100%;
+    /* ggf. weitere Styles: padding, border, etc. */
+    text-align: left;         /* falls du den Text ausrichten willst */
+    position: relative;       /* optional, falls du was ausrichten willst */
+}
+
+/* Pfeil-Zeile als eigener Block */
+.button-arrow-row {
+    text-align: center;       /* Pfeil horizontal zentrieren */
+    margin-top: 4px;          /* kleiner Abstand nach oben */
+}
+
+.arrow-icon {
+    font-size: 14px;          /* Pfeilgröße anpassen */
+    color: #666;              /* Pfeilfarbe */
+}
+
+.variant-prices {
+    color: #007BFF; /* Blau für reguläre Preise */
+}
+
+.price-discount {
+    color: green;
+    margin-left: 10px;
+}
+
+.variant-availability {
+    margin-top: 5px;
+}
+
+.in-stock {
+    color: gray;
+}
+
+.out-of-stock {
+    color: red;
+}
+
+.variant-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    margin-bottom: 5px; /* Reduzierter Abstand am Ende */
+}
+
+.variant-item {
+    padding: 10px 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-bottom: 4px; /* Reduzierter Abstand zwischen Items */
+}
+
+.variant-item:hover:not(.variant-disabled) {
+    background-color: rgba(239, 108, 0, 0.07);
+}
+
+.variant-disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.variant-selected {
+    background-color: rgba(239, 108, 0, 0.15);
+    border-color: rgba(239, 108, 0);
+}
+
+.overview .prices, .variant-overview .prices {
+    border-bottom: none;
+    border-radius: 0px;
+}
+
+.variant-addtocart-section {
+    margin-top: 25px;
+}
+
+.addtocart-block {
+    margin-bottom: 10px;
+}
+.close-button {
+    position: absolute;
+    top: 10px;
+    right: 10px; /* Angepasst für bessere Position */
+    font-size: 1.5rem;
+    cursor: pointer;
+    z-index: 1010; /* Stellt sicher, dass es über anderen Elementen liegt */
+}
+/* Varianten Modal */
+@@media (max-width: 768px) {
+    .variant-modal {
+        display: none; /* Versteckt standardmäßig */
+        position: fixed;
+        z-index: 1002;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        background-color: rgba(0,0,0,0.5); /* Overlay */
+        transition: opacity 0.3s ease;
+    }
+    
+    .variant-modal-content {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background-color: #fff;
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+        max-height: 60vh;
+        overflow-y: auto;
+        padding: 15px;
+        padding-top: 40px; /* Platz für den fixierten Header */
+        box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+    }
+    
+
+}
+
+@@media (min-width: 769px) {
+    .variant-modal {
+        display: none; /* Versteckt standardmäßig */
+        position: absolute; /* Für Dropdown-Verhalten */
+        background-color: transparent; /* Kein Overlay auf Desktop */
+        box-shadow: none; /* Kein Overlay-Schatten */
+        z-index: 2002;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        transition: opacity 0.3s ease;
+    }
+    
+.variant-modal-content {
+        background-color: #fff;
+        border-radius: 10px;
+        max-height: 60vh;
+        overflow-y: auto;
+        padding: 15px;
+        padding-top: 40px; /* Platz für den fixierten Header */
+        box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+        position: relative; /* Wichtig für den absolut positionierten Header */
+    }
+    
+    .variant-modal-content {
+        background-color: #fff;
+        border: 1px solid #ccc;
+        box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+    }
+
+}
+
+
+
+/* Responsive Styles */
+.variant-modal-content {
+    width: 100%;
+}
+.overview .prices, .variant-overview .prices {
+    margin: 0 0 2px !important;
+    padding: 0 0 2px !important;
+}
+</style>
+
+@* JavaScript für die Variantenauswahl - vollständiger Code *@
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+        const dropdownToggle = document.querySelector(".variant-dropdown-toggle");
+        const variantsHeader = document.querySelector(".variants-header"); // Neu: Referenz zur Überschrift
+        const variantModal = document.getElementById("variantModal");
+        const closeButton = document.querySelector(".close-button");
+        const variantList = document.querySelector(".variant-list");
+        const addtocartSection = document.querySelector(".variant-addtocart-section");
+
+        if (!dropdownToggle || !variantModal || !closeButton || !variantList || !addtocartSection) return;
+
+        // Funktion zum Öffnen des Modals
+        function openModal() {
+            variantModal.style.display = "block";
+        }
+
+        // Funktion zum Schließen des Modals
+        function closeModal() {
+            variantModal.style.display = "none";
+        }
+        
+        // Funktion zur Überprüfung, ob das Gerät mobil ist
+        function isMobileDevice() {
+            return window.innerWidth <= 768;
+        }
+
+        // Event Listener für den Toggle-Button
+        dropdownToggle.addEventListener("click", function(event) {
+            event.stopPropagation();
+            openModal();
+        });
+        
+        // Neu: Event Listener für die Überschrift "Artikel wählen X varianten verfügbar"
+        if (variantsHeader) {
+            variantsHeader.addEventListener("click", function(event) {
+                event.stopPropagation();
+                openModal();
+            });
+        }
+
+        // Event Listener für den Close-Button
+        closeButton.addEventListener("click", function(){
+            closeModal();
+        });
+
+        // Klick außerhalb des Modal-Inhalts schließt das Modal
+        window.addEventListener("click", function(event){
+            if (event.target == variantModal) {
+                closeModal();
+            }
+        });
+        
+        let isMobile = isMobileDevice();
+        
+        // Klick auf Varianten-Liste
+        const items = variantList.querySelectorAll(".variant-item");
+        items.forEach(item => {
+            item.addEventListener("click", function(){
+                // Prüfen, ob disabled
+                if (item.classList.contains("variant-disabled")) {
+                    return; // keine Aktion
+                }
+                
+                // Alle .variant-selected entfernen
+                items.forEach(i => i.classList.remove("variant-selected"));
+
+                // Dieses Item markieren
+                item.classList.add("variant-selected");
+                const variantId = item.getAttribute("data-variantid");
+                if (!variantId) {
+                    console.error("Variant ID fehlt!");
+                    return;
+                }
+                
+                // Button-Content aktualisieren
+                const variantName = item.getAttribute("data-variantname") || "Unbekannt";
+                const variantPrice = item.getAttribute("data-variantprice") || "";
+                const variantDiscount = item.getAttribute("data-variantdiscount") || "";
+                const variantInStock= item.getAttribute("data-instock") || "";
+                
+                const priceHtmlElement = document.getElementById(`price-html-${variantId}`);
+                if (!priceHtmlElement) {
+                    console.error(`Preis-HTML für Variante ID ${variantId} nicht gefunden.`);
+                    return;
+                }
+                
+                const priceHtml = priceHtmlElement.innerHTML || "";
+
+                // Build the button content
+                const newButtonContent = `
+                    <div class="button-content">
+                        <div class="button-left">
+                            <div class="variant-name"><strong>${variantName}</strong></div>
+                            <div class="variant-availability">
+                                ${!variantInStock ? 
+                                    '<span class="out-of-stock">Nicht verfügbar</span>' : 
+                                    '<span class="in-stock">Auf Lager</span>'
+                                }
+                            </div>
+                        </div>
+                        <div class="button-right">
+                            ${priceHtml}
+                        </div>
+                        <div class="button-arrow-row">
+                            <span class="arrow-icon">▼</span>
+                        </div>
+                    </div>
+                `;
+
+                // Update the button's innerHTML
+                dropdownToggle.innerHTML = newButtonContent;
+
+                // Modal schließen
+                closeModal();
+
+                // Alle AddToCart-Blocks ausblenden
+                const allAddToCartBlocks = document.querySelectorAll(".addtocart-block");
+                allAddToCartBlocks.forEach(block => block.style.display = "none");
+
+                // Das passende AddToCart-Block einblenden
+                const targetBlock = document.getElementById("addtocart-block-" + variantId);
+                if (targetBlock) {
+                    targetBlock.style.display = "block";
+                }
+            });
+        });
+    });
+</script>

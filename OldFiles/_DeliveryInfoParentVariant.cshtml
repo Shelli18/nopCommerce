@@ -1,0 +1,15 @@
+﻿@model ProductDetailsModel
+
+@if (Model.FreeShippingNotificationEnabled && Model.IsFreeShipping || !string.IsNullOrWhiteSpace(Model.DeliveryDate))
+{
+    <div class="delivery">
+
+        @if (!string.IsNullOrWhiteSpace(Model.DeliveryDate))
+        {
+            <div class="delivery-date">
+              <span class="label">@T("Products.DeliveryDate") @Model.DeliveryDate</span>
+           
+            </div>
+        }
+    </div>
+}
