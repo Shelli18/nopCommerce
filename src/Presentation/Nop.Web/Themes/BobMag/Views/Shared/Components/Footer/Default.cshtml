@@ -1,0 +1,103 @@
+@model FooterModel
+
+@using Nop.Core
+@using Nop.Core.Domain.Tax
+@using Nop.Core.Domain.Topics
+
+@inject IWorkContext workContext
+
+<footer class="footer">
+    <section class="footer-upper">
+        <div class="footer-content-wrapper">
+            @await Component.InvokeAsync(typeof(FooterMenuViewComponent))
+
+            <div class="footer-block follow-us">
+                <div class="social-and-trust-row">
+                    <div class="social">
+                        <h2 class="title">
+                            @T("Footer.FollowUs")
+                        </h2>
+                        @await Component.InvokeAsync(typeof(SocialButtonsViewComponent))
+                    </div>
+
+                    <div class="trust-headers">
+                        <div class="trust-header-item">
+                            <h2>Sicher bezahlen</h2>
+                        </div>
+                        <div class="trust-header-item">
+                            <h2>Schnell versendet</h2>
+                        </div>
+                    </div>
+                </div>
+
+                @* Trust Methods - Payment & Shipping logos in new row *@
+                <div class="trust-methods-footer">
+                    <div class="method-logos">
+                        <img src="https://cdn.bob-mag.de/shop/payments/paypal-alternative2.png" alt="Zahlung mit Paypal" title="Paypal-Logo" class="method-logo" />
+                        <img src="https://cdn.bob-mag.de/shop/payments/klarna.png" alt="Zahlung mit Klarna" title="Klarna-Logo" class="method-logo" />
+                        <img src="https://cdn.bob-mag.de/shop/payments/klarna-rechnung.png" alt="Zahlung mit Klarna auf Rechnung" title="Klarna Rechnung-Logo" class="method-logo" />
+                        <img src="https://cdn.bob-mag.de/shop/payments/klarna-sofort.png" alt="Sofortzahlung mit Klarna" title="Klarna Sofort-Logo" class="method-logo" />
+                        <img src="https://cdn.bob-mag.de/shop/payments/maestro.png" alt="Zahlung mit Maestro" title="Maestro-Logo" class="method-logo" />
+                        <img src="https://cdn.bob-mag.de/shop/payments/mastercard.png" alt="Zahlung mit Mastercard" title="Mastercard-Logo" class="method-logo" />
+                        <img src="https://cdn.bob-mag.de/shop/payments/visa.png" alt="Zahlung mit Visa" title="Visa-Logo" class="method-logo" />
+                        <img src="https://cdn.bob-mag.de/shop/payments/stripe.png" alt="Zahlung mit Stripe" title="Stripe-Logo" class="method-logo" />
+                        <img src="https://cdn.bob-mag.de/shop/payments/sepa.png" alt="Zahlung per SEPA-Überweisung" title="SEPA-Logo" class="method-logo" />
+                        <img src="https://cdn.bob-mag.de/shop/payments/giropay.png" alt="Zahlung mit Giropay" title="Giropay-Logo" class="method-logo" />
+                        <img src="https://cdn.bob-mag.de/shop/payments/moneyorder.png" alt="Zahlung per Money Order" title="Money Order-Logo" class="method-logo" />
+                        <img src="https://cdn.bob-mag.de/shop/payments/googlepay.png" alt="Zahlung mit Google Pay" title="Google Pay-Logo" class="method-logo" />
+                        <img src="https://cdn.bob-mag.de/shop/payments/applepay.png" alt="Zahlung mit Apple Pay" title="Apple Pay-Logo" class="method-logo" />
+
+                        <img src="https://cdn.bob-mag.de/shop/shipping/dpd.png" alt="Versand mit DPD" title="DPD-Logo" class="method-logo" />
+                        <img src="https://cdn.bob-mag.de/shop/shipping/dpd-express.png" alt="Expressversand mit DPD" title="DPD Express-Logo" class="method-logo" />
+                        <img src="https://cdn.bob-mag.de/shop/shipping/dhl.png" alt="Versand mit DHL" title="DHL-Logo" class="method-logo" />
+                        <img src="https://cdn.bob-mag.de/shop/shipping/dhl-express.png" alt="Versand mit DHL Express" title="DHL-Logo" class="method-logo" />
+                        <img src="https://cdn.bob-mag.de/shop/shipping/ups-express.png" alt="Expressversand mit UPS" title="UPS Express-Logo" class="method-logo" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="footer-lower">
+        <div class="footer-info">
+            <span class="footer-disclaimer">@T("Content.CopyrightNotice", DateTime.Now.Year, Model.StoreName)</span>
+            @if (Model.DisplayTaxShippingInfoFooter)
+            {
+                var inclTax = await workContext.GetTaxDisplayTypeAsync() == TaxDisplayType.IncludingTax;
+                <span class="footer-tax-shipping">
+                    @T(inclTax ? "Footer.TaxShipping.InclTax" : "Footer.TaxShipping.ExclTax", await NopUrl.RouteTopicUrlAsync("shippinginfo"))
+                </span>
+            }
+        </div>
+        @if (!Model.HidePoweredByNopCommerce)
+        {
+            <div class="footer-powered-by">
+                @*Would you like to remove the "Powered by nopCommerce" link in the bottom of the footer?
+                    Please find more info at https://www.nopcommerce.com/nopcommerce-copyright-removal-key*@
+                Powered by <a href="@(OfficialSite.Main)" target="_blank" @(Model.IsHomePage ? string.Empty : "rel=nofollow")>nopCommerce</a>
+            </div>
+        }
+        @await Component.InvokeAsync(typeof(StoreThemeSelectorViewComponent))
+    </section>
+
+    @* Trust Disclaimer - Fußnotentext (ganz unten) *@
+    @{ await Html.RenderPartialAsync("_TrustDisclaimer"); }
+
+    @await Component.InvokeAsync(typeof(WidgetViewComponent), new { widgetZone = PublicWidgetZones.Footer, additionalData = Model })
+</footer>
+
+<script asp-location="Footer">
+    $(function() {
+        $('.block .title').on('click', function () {
+            var e = window, a = 'inner';
+            if (!('innerWidth' in window)) {
+                a = 'client';
+                e = document.documentElement || document.body;
+            }
+            var result = { width: e[a + 'Width'], height: e[a + 'Height'] };
+            if (result.width < 1001) {
+                $(this).siblings('.listbox').slideToggle('slow');
+            }
+        });
+    });
+</script>
