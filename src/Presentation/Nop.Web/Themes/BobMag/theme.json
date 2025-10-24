@@ -1,0 +1,8 @@
+﻿{
+  "SystemName": "Bobmag",
+  "FriendlyName": "Bob-mag",
+  "BaseTheme": "DefaultClean",
+  "SupportRTL": true,
+  "PreviewImageUrl": "~/Themes/BobMag/preview.jpg",
+  "PreviewText": "Bob-mag Theme"
+}
